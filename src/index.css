@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --fs: 1; /* escala de tipografía: 1 = normal, 1.2 = letras grandes */
+}
+
+html {
+  font-size: calc(16px * var(--fs));
+}
+
+body {
+  @apply bg-crema text-tinta font-sans antialiased;
+  margin: 0;
+}
+
+/* ====== Modo letras grandes ====== */
+.fs-grande {
+  --fs: 1.18;
+}
+
+/* ====== Modo alto contraste ======
+   No dependemos solo del color: subimos contraste de texto, bordes y foco. */
+.alto-contraste {
+  --crema: #ffffff;
+}
+.alto-contraste body,
+.alto-contraste .app-bg {
+  background: #ffffff !important;
+}
+.alto-contraste .tarjeta,
+.alto-contraste .ac-surface {
+  background: #ffffff !important;
+  border: 2px solid #1a1a1a !important;
+  color: #111111 !important;
+  box-shadow: none !important;
+}
+.alto-contraste .ac-muted {
+  color: #1f1f1f !important;
+}
+.alto-contraste .ac-ink {
+  color: #000000 !important;
+}
+
+/* Foco visible siempre (accesibilidad por teclado) */
+*:focus-visible {
+  outline: 3px solid #2f80ed;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Respeta usuarios con movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Scrollbar discreta */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d9d2ea;
+  border-radius: 999px;
+}
+
+/* Componentes reutilizables */
+@layer components {
+  .tarjeta {
+    @apply bg-white rounded-xl2 shadow-tarjeta border border-black/[0.04];
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl font-semibold transition active:scale-[0.98] disabled:opacity-50;
+  }
+  .btn-primario {
+    @apply btn bg-marca-500 text-white px-5 py-3 hover:bg-marca-600 shadow-suave;
+  }
+  .btn-secundario {
+    @apply btn bg-white text-marca-600 border-2 border-marca-200 px-5 py-3 hover:border-marca-400;
+  }
+  .btn-suave {
+    @apply btn bg-marca-50 text-marca-700 px-4 py-2.5 hover:bg-marca-100;
+  }
+}
