@@ -65,61 +65,150 @@ interface RouteInfo {
 
 const PERU_BOUNDS: [[number, number], [number, number]] = [[-19.0, -82.0], [0.5, -68.0]]
 
-// Puntos internos del campus INEN Sede Central (coords verificadas Google Maps + usuario)
-const PUNTOS_INEN = [
+interface PuntoINEN {
+  id: string
+  label: string
+  detalle: string
+  lat: number
+  lng: number
+  emoji: string
+  color: string
+  imagen: string | null
+  edificio?: string
+  piso?: string
+  tags?: string[]
+  rutaInterna?: string
+}
+
+const PUNTOS_INEN: PuntoINEN[] = [
   {
     id: 'puerta-principal',
     label: 'Puerta Principal',
     detalle: 'Ingreso por Torre de atención ambulatoria de cáncer',
-    lat: -12.1132879,
-    lng: -76.9996326,
-    emoji: '🚪',
-    color: '#2E7D32',
-    imagen: null,
+    lat: -12.1132879, lng: -76.9996326,
+    emoji: '🚪', color: '#2E7D32', imagen: null,
+    edificio: 'Torre Ambulatoria', piso: 'Planta baja',
+    tags: ['entrada', 'ingreso', 'puerta'],
   },
   {
     id: 'puerta-2',
-    label: 'Puerta 2',
+    label: 'Puerta 2 — Urgencias',
     detalle: 'Ingreso de urgencias y emergencias — lado oeste del campus',
-    lat: -12.1119228,
-    lng: -76.9991849,
-    emoji: '🚨',
-    color: '#C62828',
-    imagen: null,
+    lat: -12.1119228, lng: -76.9991849,
+    emoji: '🚨', color: '#C62828', imagen: null,
+    edificio: 'Bloque de Urgencias', piso: 'Planta baja',
+    tags: ['emergencia', 'urgencias', 'puerta'],
   },
   {
     id: 'puerta-4',
     label: 'Puerta 4',
     detalle: 'Ingreso secundario — lado este del campus',
-    lat: -12.1118063,
-    lng: -76.9976246,
-    emoji: '🚶',
-    color: '#5D4037',
-    imagen: null,
+    lat: -12.1118063, lng: -76.9976246,
+    emoji: '🚶', color: '#5D4037', imagen: null,
+    edificio: 'Acceso Este', piso: 'Planta baja',
+    tags: ['entrada', 'puerta'],
   },
   {
     id: 'admision',
     label: 'Módulo de Admisión',
     detalle: 'Tramita tu admisión y apertura de Historia Clínica',
-    lat: -12.113164,
-    lng: -76.999619,
-    emoji: '🏥',
-    color: '#E91E63',
-    imagen: '/INEN/TorreAdmision.png',
+    lat: -12.113164, lng: -76.999619,
+    emoji: '🏥', color: '#E91E63', imagen: '/INEN/TorreAdmision.png',
+    edificio: 'Torre Ambulatoria', piso: '1.er piso',
+    tags: ['admisión', 'historia clínica', 'registro'],
   },
   {
     id: 'citas',
     label: 'Módulo de Citas',
     detalle: 'Programa y confirma tus citas médicas aquí',
-    lat: -12.112396,
-    lng: -76.998969,
-    emoji: '📅',
-    color: '#1565C0',
-    imagen: '/INEN/cita.png',
+    lat: -12.112396, lng: -76.998969,
+    emoji: '📅', color: '#1565C0', imagen: '/INEN/cita.png',
+    edificio: 'Torre Ambulatoria', piso: '1.er piso',
+    tags: ['cita', 'programación', 'turno'],
   },
-] as const
-
-type PuntoINEN = (typeof PUNTOS_INEN)[number]
+  {
+    id: 'laboratorio',
+    label: 'Laboratorio INEN',
+    detalle: 'Análisis clínicos y toma de muestras',
+    lat: -12.1121384, lng: -76.9997352,
+    emoji: '🧪', color: '#7B1FA2', imagen: null,
+    edificio: 'Bloque de Diagnóstico', piso: '1.er piso',
+    tags: ['laboratorio', 'análisis', 'muestras', 'sangre'],
+  },
+  {
+    id: 'auditorio',
+    label: 'Auditorio INEN',
+    detalle: 'Salón de eventos, charlas y capacitaciones',
+    lat: -12.1119839, lng: -76.9981222,
+    emoji: '🎭', color: '#455A64', imagen: null,
+    edificio: 'Edificio Central', piso: '1.er piso',
+    tags: ['auditorio', 'eventos', 'charlas'],
+  },
+  {
+    id: 'investigacion',
+    label: 'Centro de Investigación en Cáncer',
+    detalle: 'Investigación y estudios oncológicos',
+    lat: -12.1126084, lng: -76.9995904,
+    emoji: '🔬', color: '#00695C', imagen: null,
+    edificio: 'Bloque de Investigación', piso: '2.do piso',
+    tags: ['investigación', 'ciencia', 'oncología'],
+  },
+  {
+    id: 'radioterapia',
+    label: 'Radioterapia INEN',
+    detalle: 'Tratamiento con radiación para tumores',
+    lat: -12.1129165, lng: -76.9987368,
+    emoji: '☢️', color: '#E65100', imagen: null,
+    edificio: 'Bloque de Radioterapia', piso: 'Sótano / 1.er piso',
+    tags: ['radioterapia', 'radiación', 'tratamiento'],
+  },
+  {
+    id: 'radiodiagnostico',
+    label: 'Radiodiagnóstico INEN',
+    detalle: 'Diagnóstico por imágenes de rayos X',
+    lat: -12.1128467, lng: -76.9986422,
+    emoji: '🩻', color: '#1565C0', imagen: null,
+    edificio: 'Bloque de Imágenes', piso: '1.er piso',
+    tags: ['rayos x', 'radiodiagnóstico', 'imágenes'],
+  },
+  {
+    id: 'ecografia',
+    label: 'Ecografía INEN (Puerta 60)',
+    detalle: 'Ecografías y diagnóstico por ultrasonido',
+    lat: -12.1127178, lng: -76.9985001,
+    emoji: '🔊', color: '#0277BD', imagen: null,
+    edificio: 'Bloque de Imágenes', piso: '1.er piso',
+    tags: ['ecografía', 'ultrasonido', 'imágenes'],
+  },
+  {
+    id: 'radiologia-oncologica',
+    label: 'Radiología Oncológica INEN',
+    detalle: 'Estudios de imagen especializados en oncología',
+    lat: -12.1123614, lng: -76.9983382,
+    emoji: '📡', color: '#283593', imagen: null,
+    edificio: 'Bloque de Imágenes', piso: '2.do piso',
+    tags: ['radiología', 'oncología', 'imágenes', 'tomografía'],
+  },
+  {
+    id: 'trabajo-social',
+    label: 'Trabajo Social INEN (Puerta 11-C)',
+    detalle: 'Apoyo social, orientación y gestión de beneficios para pacientes',
+    lat: -12.1124314, lng: -76.998626,
+    emoji: '🤝', color: '#6A1B9A', imagen: null,
+    edificio: 'Bloque Administrativo', piso: '1.er piso',
+    tags: ['trabajo social', 'apoyo', 'SIS', 'beneficios', 'orientación'],
+  },
+  {
+    id: 'mamografia',
+    label: 'Mamografía INEN',
+    detalle: 'Estudio de imagen para detección de cáncer de mama — Piso 3',
+    lat: -12.1127178, lng: -76.9985001,
+    emoji: '🩺', color: '#D81B60', imagen: null,
+    edificio: 'Bloque de Imágenes', piso: '3.er piso',
+    tags: ['mamografía', 'mama', 'imagen', 'detección', 'cáncer de mama', 'placa'],
+    rutaInterna: '/INEN/referencia.png',
+  },
+]
 
 // ──────────────────────────────────────────────
 // Guía paso a paso — Proceso de Admisión INEN
@@ -191,21 +280,36 @@ function sedeIcon(color: string, nearest: boolean) {
   })
 }
 
-function puntoIcon(emoji: string, color: string) {
+function puntoIcon(emoji: string, color: string, resaltado = false) {
+  const size = resaltado ? 52 : 38
+  const animStyle = resaltado
+    ? `animation:bounce-pin .6s infinite alternate;`
+    : ''
+  const ring = resaltado
+    ? `box-shadow:0 0 0 6px ${color}44,0 4px 16px rgba(0,0,0,.55);`
+    : 'box-shadow:0 3px 10px rgba(0,0,0,.4);'
   return L.divIcon({
-    html: `<div style="
-      width:38px;height:38px;
-      background:${color};
-      border-radius:50%;
-      border:3px solid #fff;
-      box-shadow:0 3px 10px rgba(0,0,0,.4);
-      display:flex;align-items:center;justify-content:center;
-      font-size:18px;line-height:1;
-    ">${emoji}</div>`,
+    html: `
+      <style>
+        @keyframes bounce-pin {
+          0%   { transform: translateY(0) scale(1); }
+          100% { transform: translateY(-8px) scale(1.12); }
+        }
+      </style>
+      <div style="
+        width:${size}px;height:${size}px;
+        background:${color};
+        border-radius:50%;
+        border:3px solid #fff;
+        ${ring}
+        display:flex;align-items:center;justify-content:center;
+        font-size:${resaltado ? 26 : 18}px;line-height:1;
+        ${animStyle}
+      ">${emoji}</div>`,
     className: '',
-    iconSize: [38, 38],
-    iconAnchor: [19, 19],
-    popupAnchor: [0, -22],
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -(size / 2 + 4)],
   })
 }
 
@@ -261,6 +365,96 @@ function BoundsManager({ enCampus }: { enCampus: boolean }) {
 }
 
 // ──────────────────────────────────────────────
+// QR Scanner modal — simulación demo
+// ──────────────────────────────────────────────
+const QR_DEMO_PUNTOS = ['mamografia', 'laboratorio', 'radioterapia', 'citas', 'admision']
+
+function QRScannerModal({
+  onResult,
+  onClose,
+}: {
+  onResult: (id: string) => void
+  onClose: () => void
+}) {
+  const [fase, setFase] = useState<'scanning' | 'detected'>('scanning')
+  const [detectedId, setDetectedId] = useState('')
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const id = QR_DEMO_PUNTOS[Math.floor(Math.random() * QR_DEMO_PUNTOS.length)]
+      setDetectedId(id)
+      setFase('detected')
+    }, 2200)
+    return () => clearTimeout(t)
+  }, [])
+
+  const punto = PUNTOS_INEN.find(p => p.id === detectedId)
+
+  return (
+    <div className="fixed inset-0 z-[3000] bg-black flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 bg-black/80">
+        <p className="text-white font-bold text-sm">📷 Escanear QR de piso</p>
+        <button onClick={onClose} className="grid place-items-center w-9 h-9 rounded-xl bg-white/10 text-white hover:bg-white/20">
+          <Icon name="close" size={18} />
+        </button>
+      </div>
+
+      <div className="flex-1 flex items-center justify-center bg-gray-900">
+        {fase === 'scanning' ? (
+          <div className="flex flex-col items-center gap-6">
+            {/* Mira animada */}
+            <div className="w-56 h-56 relative">
+              {(['top-0 left-0 border-t-4 border-l-4','top-0 right-0 border-t-4 border-r-4','bottom-0 left-0 border-b-4 border-l-4','bottom-0 right-0 border-b-4 border-r-4'] as const).map((cls, i) => (
+                <div key={i} className={`absolute w-10 h-10 ${cls} border-marca-400 rounded-sm`} />
+              ))}
+              {/* Línea de escaneo animada */}
+              <div className="absolute inset-x-0 h-0.5 bg-marca-400 opacity-80"
+                style={{ animation: 'scan-line 1.4s linear infinite', top: '50%' }} />
+              {/* QR placeholder */}
+              <div className="absolute inset-8 grid grid-cols-3 gap-1 opacity-20">
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <div key={i} className="bg-white rounded-sm" />
+                ))}
+              </div>
+            </div>
+            <p className="text-white/60 text-sm">Escaneando código QR…</p>
+            <style>{`@keyframes scan-line { 0%{top:10%} 50%{top:90%} 100%{top:10%} }`}</style>
+          </div>
+        ) : (
+          <div className="text-center px-8 space-y-5 animate-fade-up">
+            <div className="text-5xl">{punto?.emoji ?? '✅'}</div>
+            <div>
+              <p className="text-green-400 font-bold text-sm uppercase tracking-widest mb-1">QR detectado</p>
+              <p className="text-white font-extrabold text-xl">{punto?.label}</p>
+              {punto?.edificio && (
+                <p className="text-white/50 text-sm mt-1">🏢 {punto.edificio} · {punto.piso}</p>
+              )}
+            </div>
+            <div className="space-y-2 w-full">
+              <button
+                onClick={() => { onResult(detectedId); onClose() }}
+                className="w-full btn-primario py-3 text-sm"
+              >
+                Ver en el mapa
+              </button>
+              {punto?.rutaInterna && (
+                <button
+                  onClick={() => { onResult(detectedId); onClose() }}
+                  className="w-full py-3 text-sm font-bold text-white rounded-xl border border-white/20 hover:bg-white/10 transition"
+                >
+                  🗺️ Ver ruta interna
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ──────────────────────────────────────────────
 // Pantalla principal
 // ──────────────────────────────────────────────
 export default function SedesINEN({ hideTitle }: { hideTitle?: boolean } = {}) {
@@ -278,8 +472,47 @@ export default function SedesINEN({ hideTitle }: { hideTitle?: boolean } = {}) {
   const [modalPunto, setModalPunto] = useState<PuntoINEN | null>(null)
   const [modalGuia, setModalGuia] = useState(false)
   const [pasoActual, setPasoActual] = useState(0)
+  const [busqueda, setBusqueda] = useState('')
+  const [puntoResaltado, setPuntoResaltado] = useState<string | null>(null)
+  const [rutaImagenModal, setRutaImagenModal] = useState<PuntoINEN | null>(null)
+  const [qrScanner, setQrScanner] = useState(false)
+  const [puntoInfo, setPuntoInfo] = useState<PuntoINEN | null>(null)
 
   const vistaInterna = campusSede !== null
+
+  const resultadosBusqueda = busqueda.trim().length >= 2
+    ? PUNTOS_INEN.filter(p => {
+        const q = busqueda.toLowerCase()
+        return p.label.toLowerCase().includes(q) ||
+          p.detalle.toLowerCase().includes(q) ||
+          (p.tags ?? []).some(t => t.includes(q))
+      })
+    : []
+
+  const irAPunto = (p: PuntoINEN) => {
+    setBusqueda('')
+    setPuntoInfo(p)
+    setPuntoResaltado(p.id)
+    if (!campusSede) {
+      const lima = SEDES.find(s => s.id === 'lima')!
+      setCampusSede(lima)
+    }
+    fly([p.lat, p.lng], 20)
+    setTimeout(() => setPuntoResaltado(null), 4000)
+  }
+
+  const manejarQR = (data: string) => {
+    const id = data.trim().toLowerCase()
+    const punto = PUNTOS_INEN.find(p =>
+      p.id === id ||
+      p.id === data.trim() ||
+      p.label.toLowerCase().includes(id)
+    )
+    if (punto) {
+      irAPunto(punto)
+      if (punto.rutaInterna) setRutaImagenModal(punto)
+    }
+  }
 
   const fly = (center: [number, number], zoom: number) => {
     setMapCmd({ type: 'fly', center, zoom })
@@ -385,29 +618,95 @@ export default function SedesINEN({ hideTitle }: { hideTitle?: boolean } = {}) {
     <div className="space-y-3 animate-fade-up">
       {!hideTitle && <h2 className="font-display text-lg font-bold text-tinta">{tr('sedes_titulo', idioma)}</h2>}
 
-      {/* Mapa */}
-      <div className="relative rounded-2xl overflow-hidden border border-black/10" style={{ height: 504 }}>
-
+      {/* ── Barra de búsqueda + QR — FUERA del mapa ── */}
+      <div className="relative flex gap-2">
+        <div className="flex-1 relative">
+          <input
+            type="text"
+            value={busqueda}
+            onChange={e => setBusqueda(e.target.value)}
+            placeholder="🔍 Buscar área, servicio o piso en el INEN…"
+            className="w-full bg-white border border-black/15 rounded-2xl px-4 py-3 text-sm shadow-sm outline-none focus:ring-2 focus:ring-marca-300 placeholder:text-tinta/35"
+          />
+          {busqueda && (
+            <button onClick={() => setBusqueda('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-tinta/40 hover:text-tinta">
+              <Icon name="close" size={15} />
+            </button>
+          )}
+        </div>
         <button
-          onClick={obtenerUbicacion}
-          disabled={loadingLoc}
-          className="absolute top-2 right-2 z-[1000] inline-flex items-center gap-1.5 bg-white text-marca-700 border border-marca-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold shadow-suave hover:bg-marca-50 transition disabled:opacity-60"
+          onClick={() => setQrScanner(true)}
+          className="shrink-0 inline-flex items-center gap-2 bg-white border border-black/10 rounded-2xl px-4 py-3 text-sm font-semibold text-tinta/70 shadow-sm hover:bg-black/5 transition"
         >
-          <Icon name="pin" size={13} />
-          {loadingLoc ? tr('obteniendo', idioma) : tr('mi_ubicacion', idioma)}
+          <span className="text-base leading-none">⬛</span>
+          <span className="hidden sm:inline">Escanear QR</span>
         </button>
 
-        {campusSede && (
-          <button
-            onClick={salirCampus}
-            className="absolute top-2 left-2 z-[1000] inline-flex items-center gap-1.5 bg-white text-tinta border border-black/10 rounded-lg px-2.5 py-1.5 text-xs font-semibold shadow-suave hover:bg-black/5 transition"
-          >
-            <Icon name="left" size={13} /> {tr('volver_peru', idioma)}
-          </button>
+        {/* Resultados de búsqueda */}
+        {resultadosBusqueda.length > 0 && (
+          <div className="absolute top-full left-0 right-12 sm:right-0 mt-1 z-50 bg-white rounded-2xl shadow-2xl border border-black/8 overflow-hidden max-h-72 overflow-y-auto">
+            {resultadosBusqueda.map(p => (
+              <button
+                key={p.id}
+                onClick={() => irAPunto(p)}
+                className="flex items-start gap-3 w-full text-left px-4 py-3 border-b border-black/5 last:border-0 hover:bg-gray-50 transition"
+              >
+                <span className="text-2xl shrink-0 mt-0.5">{p.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-tinta">{p.label}</p>
+                  <p className="text-xs text-tinta/55 mt-0.5">{p.detalle}</p>
+                  <div className="flex flex-wrap gap-1.5 mt-1">
+                    {p.edificio && (
+                      <span className="text-[10px] font-semibold bg-black/5 text-tinta/60 rounded-full px-2 py-0.5">🏢 {p.edificio}</span>
+                    )}
+                    {p.piso && (
+                      <span className="text-[10px] font-semibold bg-black/5 text-tinta/60 rounded-full px-2 py-0.5">🔢 {p.piso}</span>
+                    )}
+                    {p.rutaInterna && (
+                      <span className="text-[10px] font-bold text-white rounded-full px-2 py-0.5" style={{ background: p.color }}>🗺️ Ruta disponible</span>
+                    )}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
         )}
+        {busqueda.trim().length >= 2 && resultadosBusqueda.length === 0 && (
+          <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white rounded-2xl shadow-sm border border-black/8 px-4 py-3 text-sm text-tinta/50">
+            Sin resultados para &ldquo;{busqueda}&rdquo;
+          </div>
+        )}
+      </div>
+
+      {/* ── Mapa ── */}
+      <div
+        className="relative rounded-2xl overflow-hidden border border-black/10"
+        style={{ height: 'clamp(500px, 90vw, 800px)' }}
+      >
+        {/* Controles dentro del mapa: ← Perú + 📍 Mi ubicación */}
+        <div className="absolute top-2 left-2 right-2 z-[1000] flex items-center justify-between gap-2 pointer-events-none">
+          <div className="pointer-events-auto">
+            {campusSede && (
+              <button
+                onClick={salirCampus}
+                className="inline-flex items-center gap-1.5 bg-white/95 text-tinta border border-black/10 rounded-xl px-3 py-2 text-xs font-semibold shadow-suave hover:bg-white transition"
+              >
+                <Icon name="left" size={13} /> {tr('volver_peru', idioma)}
+              </button>
+            )}
+          </div>
+          <button
+            onClick={obtenerUbicacion}
+            disabled={loadingLoc}
+            className="pointer-events-auto inline-flex items-center gap-1.5 bg-white/95 text-marca-700 border border-marca-200 rounded-xl px-3 py-2 text-xs font-semibold shadow-suave hover:bg-white transition disabled:opacity-60"
+          >
+            <Icon name="pin" size={13} />
+            {loadingLoc ? tr('obteniendo', idioma) : tr('mi_ubicacion', idioma)}
+          </button>
+        </div>
 
         {locError && (
-          <div className="absolute bottom-10 left-2 right-2 z-[1000] bg-white/95 border border-riesgo/30 text-riesgo text-xs rounded-lg px-2.5 py-1.5">
+          <div className="absolute bottom-10 left-2 right-2 z-[1000] bg-white/95 border border-riesgo/30 text-riesgo text-xs rounded-xl px-3 py-2">
             {tr('loc_error', idioma)}
           </div>
         )}
@@ -460,27 +759,11 @@ export default function SedesINEN({ hideTitle }: { hideTitle?: boolean } = {}) {
               key={s.id}
               position={[s.lat, s.lng]}
               icon={sedeIcon(s.color, nearest?.id === s.id)}
-              eventHandlers={{ click: () => seleccionar(s) }}
+              eventHandlers={{ click: () => entrarCampus(s) }}
             >
               <Popup>
-                <div style={{ minWidth: 170 }}>
-                  <p style={{ fontWeight: 700, color: s.color, marginBottom: 2 }}>{s.nombre}</p>
-                  <p style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>{s.direccion}</p>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    <button
-                      onClick={() => seleccionar(s)}
-                      style={{ background: s.color, color: '#fff', border: 'none', borderRadius: 7, padding: '4px 10px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}
-                    >
-                      {tr('ver_ruta', idioma)}
-                    </button>
-                    <button
-                      onClick={() => entrarCampus(s)}
-                      style={{ background: '#fff', color: s.color, border: `1.5px solid ${s.color}`, borderRadius: 7, padding: '4px 10px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}
-                    >
-                      {tr('ver_campus', idioma)}
-                    </button>
-                  </div>
-                </div>
+                <p style={{ fontWeight: 700, color: s.color, margin: 0, fontSize: 13 }}>{s.nombre}</p>
+                <p style={{ fontSize: 11, color: '#888', margin: '2px 0 0' }}>{s.ciudad}</p>
               </Popup>
             </Marker>
           ))}
@@ -488,82 +771,116 @@ export default function SedesINEN({ hideTitle }: { hideTitle?: boolean } = {}) {
           {campusSede && campusSede.id !== 'lima' && (
             <Marker position={[campusSede.lat, campusSede.lng]} icon={sedeIcon(campusSede.color, true)}>
               <Popup>
-                <div style={{ minWidth: 160 }}>
-                  <p style={{ fontWeight: 700, color: campusSede.color, marginBottom: 2 }}>{campusSede.nombre}</p>
-                  <p style={{ fontSize: 12, color: '#666' }}>{campusSede.direccion}</p>
-                </div>
+                <p style={{ fontWeight: 700, color: campusSede.color, margin: 0, fontSize: 13 }}>{campusSede.nombre}</p>
+                <p style={{ fontSize: 11, color: '#888', margin: '2px 0 0' }}>{campusSede.ciudad}</p>
               </Popup>
             </Marker>
           )}
 
-          {campusSede?.id === 'lima' && PUNTOS_INEN.filter(p => !(p.id === 'puerta-principal' && route)).map((p) => (
-            <Marker
-              key={p.id}
-              position={[p.lat, p.lng]}
-              icon={puntoIcon(p.emoji, p.color)}
-              eventHandlers={{ click: () => {
-                if (p.id === 'admision') { setModalGuia(true); setPasoActual(0) }
-                else if (p.imagen) setModalPunto(p)
-              } }}
-            >
-              {!p.imagen && (
+          {campusSede?.id === 'lima' && PUNTOS_INEN.map((p) => {
+            const resaltado = puntoResaltado === p.id
+            return (
+              <Marker
+                key={p.id}
+                position={[p.lat, p.lng]}
+                icon={puntoIcon(p.emoji, p.color, resaltado)}
+                eventHandlers={{ click: () => {
+                  irAPunto(p)
+                  if (p.id === 'admision') { setModalGuia(true); setPasoActual(0) }
+                }}}
+              >
                 <Popup>
-                  <div style={{ minWidth: 160 }}>
-                    <p style={{ fontWeight: 700, color: p.color, marginBottom: 2 }}>{p.label}</p>
-                    <p style={{ fontSize: 12, color: '#555' }}>{p.detalle}</p>
-                  </div>
+                  <p style={{ fontWeight: 700, color: p.color, margin: 0, fontSize: 13 }}>
+                    {p.emoji} {p.label.replace(/\s*INEN\s*/g, '').trim()}
+                  </p>
                 </Popup>
-              )}
-            </Marker>
-          ))}
+              </Marker>
+            )
+          })}
         </MapContainer>
       </div>
 
-      {seleccionada && (
+      {/* Tarjeta de resultado de búsqueda / QR */}
+      {puntoInfo && (
         <div
-          className="rounded-xl border-l-4 px-3 py-2.5 flex items-center gap-3"
-          style={{ borderLeftColor: seleccionada.color, background: seleccionada.color + '0d' }}
+          className="rounded-2xl border-l-4 px-4 py-3 animate-fade-up"
+          style={{ borderLeftColor: puntoInfo.color, background: puntoInfo.color + '12' }}
         >
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm text-tinta truncate">{seleccionada.nombre}</p>
-            <p className="text-xs text-tinta/55 truncate">{seleccionada.direccion}</p>
-          </div>
-          {loadingRoute && <p className="text-xs text-marca-600 animate-pulse shrink-0">{tr('calculando', idioma)}</p>}
-          {route && !loadingRoute && (
-            <div className="flex gap-3 shrink-0 text-xs font-semibold text-tinta/70">
-              <span className="flex items-center gap-1"><Icon name="clock" size={13} className="text-marca-600" />{formatDur(route.durationMin)}</span>
-              <span className="flex items-center gap-1"><Icon name="ruta" size={13} className="text-marca-600" />{route.distanceKm} km</span>
+          <div className="flex items-start gap-3">
+            <span className="text-2xl shrink-0 mt-0.5">{puntoInfo.emoji}</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-sm text-tinta leading-tight">{puntoInfo.label}</p>
+              <p className="text-xs text-tinta/55 mt-0.5 leading-relaxed">{puntoInfo.detalle}</p>
+              <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                {puntoInfo.edificio && (
+                  <span className="inline-flex items-center gap-1 text-xs text-tinta/60 bg-black/5 rounded-full px-2 py-0.5">
+                    🏢 {puntoInfo.edificio}
+                  </span>
+                )}
+                {puntoInfo.piso && (
+                  <span className="inline-flex items-center gap-1 text-xs text-tinta/60 bg-black/5 rounded-full px-2 py-0.5">
+                    🔢 {puntoInfo.piso}
+                  </span>
+                )}
+              </div>
             </div>
+            <button
+              onClick={() => setPuntoInfo(null)}
+              className="shrink-0 grid place-items-center w-7 h-7 rounded-full bg-black/5 text-tinta/40 hover:bg-black/10 hover:text-tinta/70 transition"
+            >
+              <Icon name="close" size={13} />
+            </button>
+          </div>
+          {puntoInfo.rutaInterna && (
+            <button
+              onClick={() => setRutaImagenModal(puntoInfo)}
+              className="mt-3 w-full flex items-center justify-center gap-2 text-sm font-bold text-white rounded-xl py-2.5 transition active:scale-95"
+              style={{ background: puntoInfo.color }}
+            >
+              🗺️ Ver ruta interna al piso
+            </button>
           )}
-          <button
-            onClick={() => entrarCampus(seleccionada)}
-            className="shrink-0 text-xs font-semibold text-marca-600 border border-marca-200 rounded-lg px-2 py-1 hover:bg-marca-50 transition"
-          >
-            {tr('campus_btn', idioma)}
-          </button>
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-2">
-          {SEDES.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => seleccionar(s)}
-              className={`text-left rounded-xl p-3 border-l-4 bg-white transition hover:shadow-suave ${
-                seleccionada?.id === s.id ? 'ring-2' : 'border border-black/5'
-              }`}
-              style={{ borderLeftColor: s.color, ...(seleccionada?.id === s.id ? { outlineColor: s.color } : {}) }}
-            >
-              <p className="font-bold text-xs leading-tight" style={{ color: s.color }}>{s.nombre}</p>
-              <p className="text-[10px] text-tinta/45 uppercase tracking-wide mt-0.5">{s.region}</p>
-              {nearest?.id === s.id && userPos && (
-                <span className="inline-block mt-1 text-[10px] font-bold px-1.5 py-px rounded-full text-white" style={{ background: s.color }}>
-                  {tr('mas_cercana', idioma)}
-                </span>
-              )}
-            </button>
-          ))}
+      {/* Ruta calculada (solo cuando hay userPos) */}
+      {route && seleccionada && !loadingRoute && (
+        <div className="flex items-center gap-3 bg-white rounded-2xl border border-black/8 px-4 py-2.5 shadow-sm">
+          <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: seleccionada.color }} />
+          <p className="text-xs font-semibold text-tinta flex-1 truncate">{seleccionada.nombre}</p>
+          <span className="flex items-center gap-1 text-xs font-bold text-tinta/70">
+            <Icon name="clock" size={12} className="text-marca-600" />{formatDur(route.durationMin)}
+          </span>
+          <span className="flex items-center gap-1 text-xs font-bold text-tinta/70">
+            <Icon name="ruta" size={12} className="text-marca-600" />{route.distanceKm} km
+          </span>
         </div>
+      )}
+      {loadingRoute && (
+        <p className="text-xs text-marca-600 animate-pulse text-center">{tr('calculando', idioma)}</p>
+      )}
+
+      {/* Sedes — tap = entrar al campus directamente */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {SEDES.map((s) => (
+          <button
+            key={s.id}
+            onClick={() => entrarCampus(s)}
+            className={`text-left rounded-2xl p-3 border-l-4 bg-white transition active:scale-[.97] hover:shadow-suave ${
+              campusSede?.id === s.id ? 'ring-2 shadow-suave' : 'border border-black/5'
+            }`}
+            style={{ borderLeftColor: s.color, ...(campusSede?.id === s.id ? { ringColor: s.color } : {}) }}
+          >
+            <p className="font-bold text-xs leading-tight" style={{ color: s.color }}>{s.nombre}</p>
+            <p className="text-[10px] text-tinta/45 uppercase tracking-wide mt-0.5">{s.ciudad}</p>
+            {nearest?.id === s.id && userPos && (
+              <span className="inline-block mt-1 text-[10px] font-bold px-1.5 py-px rounded-full text-white" style={{ background: s.color }}>
+                {tr('mas_cercana', idioma)}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
 
       {/* Modal imagen de referencia */}
       {modalPunto && modalPunto.imagen && (
@@ -710,6 +1027,90 @@ export default function SedesINEN({ hideTitle }: { hideTitle?: boolean } = {}) {
               >
                 {pasoActual === 6 ? '📍 Ver en mapa' : pasoActual < PASOS_ADMISION.length - 1 ? 'Siguiente' : '¡Listo!'}
                 <Icon name="right" size={12} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* QR Scanner */}
+      {qrScanner && (
+        <QRScannerModal
+          onResult={manejarQR}
+          onClose={() => setQrScanner(false)}
+        />
+      )}
+
+      {/* Modal ruta interna */}
+      {rutaImagenModal?.rutaInterna && (
+        <div
+          className="fixed inset-0 z-[2500] flex items-end justify-center"
+          style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
+          onClick={() => setRutaImagenModal(null)}
+        >
+          <div
+            className="w-full max-w-lg bg-white rounded-t-3xl overflow-hidden shadow-2xl"
+            style={{ maxHeight: '92dvh', display: 'flex', flexDirection: 'column' }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Handle */}
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 rounded-full bg-black/15" />
+            </div>
+
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-3 border-b border-black/5">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">{rutaImagenModal.emoji}</span>
+                <div>
+                  <p className="font-extrabold text-base text-tinta">{rutaImagenModal.label}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    {rutaImagenModal.edificio && (
+                      <span className="text-xs bg-marca-50 text-marca-700 font-semibold px-2 py-0.5 rounded-full">🏢 {rutaImagenModal.edificio}</span>
+                    )}
+                    {rutaImagenModal.piso && (
+                      <span className="text-xs bg-blue-50 text-blue-700 font-semibold px-2 py-0.5 rounded-full">🔢 {rutaImagenModal.piso}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setRutaImagenModal(null)}
+                className="grid place-items-center w-9 h-9 rounded-xl bg-black/5 text-tinta/60 hover:bg-black/10 shrink-0"
+              >
+                <Icon name="close" size={18} />
+              </button>
+            </div>
+
+            {/* Label */}
+            <div className="px-5 pt-3 pb-1">
+              <p className="text-xs font-semibold text-tinta/40 uppercase tracking-wider">Plano de ruta interna</p>
+            </div>
+
+            {/* Imagen */}
+            <div className="flex-1 overflow-auto px-4 pb-2">
+              <img
+                src={rutaImagenModal.rutaInterna}
+                alt={`Ruta a ${rutaImagenModal.label}`}
+                className="w-full rounded-2xl border border-black/5 shadow-sm object-contain"
+              />
+            </div>
+
+            {/* Pasos rápidos */}
+            <div className="px-5 py-3 bg-gray-50 border-t border-black/5">
+              <div className="flex items-center gap-3 text-sm text-tinta/70">
+                <span className="text-lg">🚶</span>
+                <p>Sigue el recorrido señalado en el plano. El destino está marcado con ⭐</p>
+              </div>
+            </div>
+
+            {/* Acción */}
+            <div className="px-5 pb-6 pt-3">
+              <button
+                onClick={() => setRutaImagenModal(null)}
+                className="w-full btn-primario py-3.5 text-sm font-bold rounded-2xl"
+              >
+                ✓ Entendido, seguiré esta ruta
               </button>
             </div>
           </div>
