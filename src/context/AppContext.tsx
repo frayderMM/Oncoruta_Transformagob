@@ -24,6 +24,8 @@ export type Pantalla =
   | 'cuidador'
   | 'asistente'
   | 'accesibilidad'
+  | 'sedes'
+  // INEN
   | 'panel'
   | 'detalle'
   | 'admin'

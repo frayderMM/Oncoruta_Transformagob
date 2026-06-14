@@ -6,7 +6,7 @@ type IconName =
   | 'whatsapp' | 'sms' | 'speaker' | 'help' | 'right' | 'left'
   | 'pin' | 'clock' | 'plus' | 'filter' | 'search' | 'shield'
   | 'globe' | 'contrast' | 'textsize' | 'heart' | 'spark' | 'send'
-  | 'flag' | 'note' | 'close'
+  | 'flag' | 'note' | 'close' | 'map'
 
 const PATHS: Record<IconName, JSX.Element> = {
   home: <path d="M3 11l9-8 9 8M5 10v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V10" />,
@@ -43,6 +43,7 @@ const PATHS: Record<IconName, JSX.Element> = {
   flag: <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7" />,
   note: <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.1 2.1 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />,
   close: <path d="M18 6L6 18M6 6l12 12" />,
+  map: <path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4zM8 2v16M16 6v16" />,
 }
 
 interface Props extends SVGProps<SVGSVGElement> {

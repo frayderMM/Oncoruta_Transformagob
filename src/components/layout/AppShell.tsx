@@ -26,6 +26,7 @@ function Logo() {
 }
 
 const NAV_PACIENTE: { p: Pantalla; icon: IconName; label: string }[] = [
+  { p: 'sedes', icon: 'map', label: 'Sedes INEN' },
   { p: 'home', icon: 'home', label: 'Inicio' },
   { p: 'ruta', icon: 'ruta', label: 'Mi ruta' },
   { p: 'citas', icon: 'calendar', label: 'Mis citas' },

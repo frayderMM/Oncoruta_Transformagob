@@ -3,7 +3,8 @@ import { useAccesibilidad } from '../../context/AccesibilidadContext'
 import { tr } from '../../data/i18n'
 import Icon, { type IconName } from '../ui/Icon'
 
-const ITEMS: { p: Pantalla; icon: IconName; key: 'inicio' | 'mi_ruta' | 'mis_citas' | 'documentos' | 'alertas' }[] = [
+const ITEMS: { p: Pantalla; icon: IconName; key: 'sedes_inen' | 'inicio' | 'mi_ruta' | 'mis_citas' | 'documentos' | 'alertas' }[] = [
+  { p: 'sedes', icon: 'map', key: 'sedes_inen' },
   { p: 'home', icon: 'home', key: 'inicio' },
   { p: 'ruta', icon: 'ruta', key: 'mi_ruta' },
   { p: 'citas', icon: 'calendar', key: 'mis_citas' },
@@ -19,7 +20,7 @@ export default function BottomNav() {
 
   return (
     <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-black/5 pb-[env(safe-area-inset-bottom)]">
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-6">
         {ITEMS.map((it) => {
           const activo = pantalla === it.p
           return (
