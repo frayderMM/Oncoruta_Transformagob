@@ -1058,10 +1058,16 @@ export default function RutaHorizontal({ ruta, documentosRuta, onVerHistorial }:
                 onClick={() => setTabActivo(tab.id)}
                 className={`relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap rounded-t-xl transition-colors ${
                   activo
-                    ? 'text-marca-600 bg-white border border-b-white border-black/8 -mb-px z-10'
+                    ? 'text-marca-700 bg-white border border-b-white border-black/8 -mb-px z-10'
                     : 'text-tinta/45 hover:text-tinta/70 hover:bg-black/[0.03] rounded-t-xl'
                 }`}
               >
+                {activo && (
+                  <span
+                    className="absolute inset-x-3 top-0 h-0.5 rounded-full"
+                    style={{ background: 'linear-gradient(90deg, #014B8C, #026BB3, #03B1EC)' }}
+                  />
+                )}
                 <Icon
                   name={completado && !activo ? 'check' : tab.icon}
                   size={15}

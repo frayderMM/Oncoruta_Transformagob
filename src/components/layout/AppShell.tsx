@@ -11,15 +11,15 @@ import ChatIANoClinico from '../ChatIANoClinico'
 function Logo() {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="grid place-items-center w-9 h-9 rounded-xl bg-marca-500 text-white shrink-0">
+      <span className="grid place-items-center w-9 h-9 rounded-xl bg-white/20 border border-white/25 text-white shrink-0">
         <svg width="22" height="22" viewBox="0 0 64 64" fill="none" aria-hidden="true">
           <path d="M20 44 C20 30, 28 24, 32 16 C36 24, 44 30, 44 44" stroke="white" strokeWidth="5" strokeLinecap="round" />
-          <circle cx="32" cy="44" r="5" fill="#F76C8C" />
+          <circle cx="32" cy="44" r="5" fill="#72D0F3" />
         </svg>
       </span>
       <div className="leading-none">
-        <p className="font-display font-extrabold text-tinta ac-ink text-[15px]">OncoRuta</p>
-        <p className="text-[11px] text-marca-600 font-semibold -mt-0.5">Mujer IA</p>
+        <p className="font-display font-extrabold text-white text-[15px]">OncoRuta</p>
+        <p className="text-[11px] text-white/70 font-semibold -mt-0.5">Mujer IA</p>
       </div>
     </div>
   )
@@ -62,7 +62,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <BarraAccesibilidad />
 
       {/* Cabecera */}
-      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-black/5">
+      <header className="sticky top-0 z-30 bg-inen shadow-md">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
           <Logo />
 
@@ -75,8 +75,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
                   onClick={() => ir(it.p)}
                   className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition ${
                     pantalla === it.p || (pantalla === 'historial' && it.p === 'ruta')
-                      ? 'bg-marca-50 text-marca-700'
-                      : 'text-tinta/60 hover:text-tinta hover:bg-black/5'
+                      ? 'bg-white/20 text-white'
+                      : 'text-white/70 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <Icon name={it.icon} size={16} /> {it.label}
@@ -87,12 +87,12 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
           <div className="flex items-center gap-2">
             <div className="text-right hidden sm:block leading-tight">
-              <p className="text-xs font-semibold text-tinta ac-ink">{sesion.nombre}</p>
-              <p className="text-[11px] text-tinta/50 ac-muted">{rolLabel}</p>
+              <p className="text-xs font-semibold text-white">{sesion.nombre}</p>
+              <p className="text-[11px] text-white/60">{rolLabel}</p>
             </div>
             <button
               onClick={cerrarSesion}
-              className="grid place-items-center w-9 h-9 rounded-xl bg-black/5 text-tinta/60 hover:bg-black/10"
+              className="grid place-items-center w-9 h-9 rounded-xl bg-white/15 text-white hover:bg-white/25 transition"
               aria-label="Salir"
               title={tr('salir', idioma)}
             >
@@ -103,16 +103,16 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
         {/* Sub-header de página para pantallas de detalle */}
         {pantalla === 'historial' && (
-          <div className="border-t border-black/5 bg-marca-50/60">
+          <div className="border-t border-white/15 bg-white/10 backdrop-blur-sm">
             <div className="max-w-6xl mx-auto px-4 h-10 flex items-center gap-3">
               <button
                 onClick={() => ir('ruta')}
-                className="flex items-center gap-1.5 text-sm text-tinta/55 hover:text-marca-600 transition font-medium"
+                className="flex items-center gap-1.5 text-sm text-white/70 hover:text-white transition font-medium"
               >
                 <Icon name="left" size={15} /> Mi Ruta
               </button>
-              <Icon name="right" size={13} className="text-black/20" />
-              <span className="text-sm font-semibold text-marca-700">
+              <Icon name="right" size={13} className="text-white/30" />
+              <span className="text-sm font-semibold text-white">
                 Historial clínico resumido
               </span>
             </div>
@@ -133,7 +133,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         <>
           <button
             onClick={() => setChatAbierto((v) => !v)}
-            className="fixed z-40 right-4 bottom-20 md:bottom-6 grid place-items-center w-14 h-14 rounded-2xl bg-marca-500 text-white shadow-suave hover:bg-marca-600"
+            className="fixed z-40 right-4 bottom-20 md:bottom-6 grid place-items-center w-14 h-14 rounded-2xl bg-inen-btn text-white shadow-suave hover:opacity-90 transition"
             aria-label="Abrir asistente"
           >
             <Icon name={chatAbierto ? 'close' : 'chat'} size={24} />

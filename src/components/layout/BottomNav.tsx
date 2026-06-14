@@ -26,9 +26,12 @@ export default function BottomNav() {
               key={it.p}
               onClick={() => ir(it.p)}
               className={`relative flex flex-col items-center gap-0.5 py-2.5 ${
-                activo ? 'text-marca-600' : 'text-tinta/45'
+                activo ? 'text-marca-700' : 'text-tinta/45'
               }`}
             >
+              {activo && (
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-inen-btn" />
+              )}
               <Icon name={it.icon} size={22} />
               {it.key === 'alertas' && alertasNuevas > 0 && (
                 <span className="absolute top-1.5 right-1/2 translate-x-3.5 bg-riesgo text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 grid place-items-center px-1">

@@ -26,8 +26,9 @@ export default function PacienteHome() {
   return (
     <div className="space-y-5 animate-fade-up">
       {/* Saludo + estado general */}
-      <div className="rounded-3xl bg-gradient-to-br from-marca-500 to-marca-600 text-white p-6 relative overflow-hidden">
-        <div className="absolute -right-10 -bottom-12 w-52 h-52 rounded-full bg-rosa-500/25 blur-2xl" />
+      <div className="rounded-3xl bg-inen-v text-white p-6 relative overflow-hidden">
+        <div className="absolute -right-10 -bottom-12 w-52 h-52 rounded-full bg-white/10 blur-2xl" />
+        <div className="absolute left-1/3 -top-8 w-40 h-40 rounded-full bg-marca-300/20 blur-2xl" />
         <div className="relative">
           <p className="text-white/80">{tr('saludo', idioma)},</p>
           <h1 className="font-display text-3xl font-extrabold">{p.nombres} {p.apellidos.split(' ')[0]}</h1>
@@ -56,9 +57,9 @@ export default function PacienteHome() {
       </Card>
 
       {/* Próximo paso destacado */}
-      <Card className="border-2 border-marca-200 bg-marca-50/40">
+      <Card className="border border-marca-200 bg-marca-50/60">
         <div className="flex items-start gap-3">
-          <span className="grid place-items-center w-11 h-11 rounded-2xl bg-marca-500 text-white shrink-0">
+          <span className="grid place-items-center w-11 h-11 rounded-2xl bg-inen-btn text-white shrink-0">
             <Icon name="flag" size={22} />
           </span>
           <div className="flex-1">

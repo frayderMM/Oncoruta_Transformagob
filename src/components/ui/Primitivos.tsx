@@ -31,7 +31,8 @@ export function SectionTitle({
   return (
     <div className="mb-3">
       <h2 className="font-display text-xl font-bold text-tinta ac-ink">{children}</h2>
-      {sub && <p className="text-sm text-tinta/60 ac-muted mt-0.5">{sub}</p>}
+      <div className="mt-1 h-0.5 w-12 rounded-full bg-inen-btn" />
+      {sub && <p className="text-sm text-tinta/60 ac-muted mt-2">{sub}</p>}
     </div>
   )
 }

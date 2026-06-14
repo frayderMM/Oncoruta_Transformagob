@@ -82,7 +82,7 @@ function PrimeraCitaModal({ onClose, idioma }: { onClose: () => void; idioma: Id
           <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${pct}%`, background: todo ? '#22c55e' : '#E91E63' }}
+              style={{ width: `${pct}%`, background: todo ? '#2EAD6B' : 'linear-gradient(90deg, #014B8C, #026BB3, #03B1EC)' }}
             />
           </div>
           {todo && (
@@ -153,16 +153,17 @@ export default function Login() {
       <div className="flex-1 grid lg:grid-cols-[1fr_1fr]">
 
         {/* Panel izquierdo — marca (solo escritorio) */}
-        <div className="relative hidden lg:flex flex-col justify-between p-12 bg-marca-500 text-white overflow-hidden">
-          <div className="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-white/5" />
-          <div className="absolute -left-12 bottom-0 w-72 h-72 rounded-full bg-black/10" />
+        <div className="relative hidden lg:flex flex-col justify-between p-12 bg-inen-v text-white overflow-hidden">
+          <div className="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-white/8" />
+          <div className="absolute -left-12 bottom-0 w-72 h-72 rounded-full bg-black/15" />
+          <div className="absolute right-0 top-1/3 w-64 h-64 rounded-full bg-marca-300/15 blur-3xl" />
 
           {/* Logo */}
           <div className="relative flex items-center gap-3">
             <span className="grid place-items-center w-12 h-12 rounded-2xl bg-white/20">
               <svg width="26" height="26" viewBox="0 0 64 64" fill="none">
                 <path d="M20 44 C20 30, 28 24, 32 16 C36 24, 44 30, 44 44" stroke="white" strokeWidth="5" strokeLinecap="round" />
-                <circle cx="32" cy="44" r="5" fill="#F76C8C" />
+                <circle cx="32" cy="44" r="5" fill="#72D0F3" />
               </svg>
             </span>
             <div className="leading-none">
@@ -201,10 +202,10 @@ export default function Login() {
 
             {/* Logo — solo móvil */}
             <div className="lg:hidden flex items-center gap-2.5 mb-7">
-              <span className="grid place-items-center w-10 h-10 rounded-xl bg-marca-500 text-white shrink-0">
+              <span className="grid place-items-center w-10 h-10 rounded-xl bg-inen-btn text-white shrink-0">
                 <svg width="22" height="22" viewBox="0 0 64 64" fill="none">
                   <path d="M20 44 C20 30, 28 24, 32 16 C36 24, 44 30, 44 44" stroke="white" strokeWidth="5" strokeLinecap="round" />
-                  <circle cx="32" cy="44" r="5" fill="#F76C8C" />
+                  <circle cx="32" cy="44" r="5" fill="#72D0F3" />
                 </svg>
               </span>
               <div className="leading-none">
@@ -291,10 +292,10 @@ export default function Login() {
           <BarraAccesibilidad />
           <div className="bg-white border-b border-black/6 px-4 h-13 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <span className="grid place-items-center w-8 h-8 rounded-xl bg-marca-500 text-white shrink-0">
+              <span className="grid place-items-center w-8 h-8 rounded-xl bg-inen-btn text-white shrink-0">
                 <svg width="18" height="18" viewBox="0 0 64 64" fill="none">
                   <path d="M20 44 C20 30, 28 24, 32 16 C36 24, 44 30, 44 44" stroke="white" strokeWidth="5" strokeLinecap="round" />
-                  <circle cx="32" cy="44" r="5" fill="#F76C8C" />
+                  <circle cx="32" cy="44" r="5" fill="#72D0F3" />
                 </svg>
               </span>
               <div className="leading-none">
