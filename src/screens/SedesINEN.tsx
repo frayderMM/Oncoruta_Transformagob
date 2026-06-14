@@ -680,8 +680,7 @@ export default function SedesINEN({ hideTitle }: { hideTitle?: boolean } = {}) {
 
       {/* ── Mapa ── */}
       <div
-        className="relative rounded-2xl overflow-hidden border border-black/10"
-        style={{ height: 'clamp(500px, 90vw, 800px)' }}
+        className="relative rounded-2xl overflow-hidden border border-black/10 h-[500px] md:h-[420px]"
       >
         {/* Controles dentro del mapa: ← Perú + 📍 Mi ubicación */}
         <div className="absolute top-2 left-2 right-2 z-[1000] flex items-center justify-between gap-2 pointer-events-none">
