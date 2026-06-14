@@ -11,6 +11,7 @@ type Dic = Record<string, { es: string; qu: string }>
 
 export const t: Dic = {
   // Navegación / estructura
+  sedes_inen: { es: 'Sedes', qu: 'Wasikunam' },
   inicio: { es: 'Inicio', qu: 'Qallariy' },
   mi_ruta: { es: 'Mi ruta', qu: 'Ñanniy' },
   mis_citas: { es: 'Mis citas', qu: 'Tupanaykuna' },

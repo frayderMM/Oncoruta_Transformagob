@@ -15,6 +15,7 @@ import DetallePaciente from './screens/DetallePaciente'
 import Accesibilidad from './screens/Accesibilidad'
 import AdminPanel from './screens/AdminPanel'
 
+import SedesINEN from './screens/SedesINEN'
 import ChatIANoClinico from './components/ChatIANoClinico'
 import { SectionTitle, AvisoSeguridad } from './components/ui/Primitivos'
 
@@ -59,6 +60,9 @@ export default function App() {
       break
     case 'alertas':
       contenido = <Alertas />
+      break
+    case 'sedes':
+      contenido = <SedesINEN />
       break
     case 'asistente':
       contenido = <AsistenteScreen />
