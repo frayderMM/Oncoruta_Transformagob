@@ -28,8 +28,6 @@ function Logo() {
 const NAV_PACIENTE: { p: Pantalla; icon: IconName; label: string }[] = [
   { p: 'home', icon: 'home', label: 'Inicio' },
   { p: 'ruta', icon: 'ruta', label: 'Mi ruta' },
-  { p: 'citas', icon: 'calendar', label: 'Mis citas' },
-  { p: 'documentos', icon: 'doc', label: 'Documentos' },
   { p: 'alertas', icon: 'bell', label: 'Alertas' },
   { p: 'cuidador', icon: 'users', label: 'Cuidador' },
   { p: 'accesibilidad', icon: 'settings', label: 'Accesibilidad' },

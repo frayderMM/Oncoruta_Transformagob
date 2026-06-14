@@ -86,7 +86,7 @@ const PANTALLA_INICIAL: Record<Rol, Pantalla> = {
 }
 
 const NOMBRE_ROL: Record<Rol, string> = {
-  paciente: 'María Quispe',
+  paciente: 'María Quispe Gonzales',
   cuidador: 'Ana Quispe',
   inen: 'L. Ríos (Navegadora)',
   admin: 'Admin INEN',
