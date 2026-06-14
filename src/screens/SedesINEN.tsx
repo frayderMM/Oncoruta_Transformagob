@@ -4,6 +4,8 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
 import Icon from '../components/ui/Icon'
+import { useAccesibilidad } from '../context/AccesibilidadContext'
+import { tr } from '../data/i18n'
 
 // ──────────────────────────────────────────────
 // Sedes INEN
@@ -261,7 +263,8 @@ function BoundsManager({ enCampus }: { enCampus: boolean }) {
 // ──────────────────────────────────────────────
 // Pantalla principal
 // ──────────────────────────────────────────────
-export default function SedesINEN() {
+export default function SedesINEN({ hideTitle }: { hideTitle?: boolean } = {}) {
+  const { idioma } = useAccesibilidad()
   const [userPos, setUserPos] = useState<[number, number] | null>(null)
   const [locError, setLocError] = useState<string | null>(null)
   const [loadingLoc, setLoadingLoc] = useState(false)
@@ -380,7 +383,7 @@ export default function SedesINEN() {
 
   return (
     <div className="space-y-3 animate-fade-up">
-      <h2 className="font-display text-lg font-bold text-tinta">Sedes INEN</h2>
+      {!hideTitle && <h2 className="font-display text-lg font-bold text-tinta">{tr('sedes_titulo', idioma)}</h2>}
 
       {/* Mapa */}
       <div className="relative rounded-2xl overflow-hidden border border-black/10" style={{ height: 504 }}>
@@ -391,7 +394,7 @@ export default function SedesINEN() {
           className="absolute top-2 right-2 z-[1000] inline-flex items-center gap-1.5 bg-white text-marca-700 border border-marca-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold shadow-suave hover:bg-marca-50 transition disabled:opacity-60"
         >
           <Icon name="pin" size={13} />
-          {loadingLoc ? 'Obteniendo…' : 'Mi ubicación'}
+          {loadingLoc ? tr('obteniendo', idioma) : tr('mi_ubicacion', idioma)}
         </button>
 
         {campusSede && (
@@ -399,13 +402,13 @@ export default function SedesINEN() {
             onClick={salirCampus}
             className="absolute top-2 left-2 z-[1000] inline-flex items-center gap-1.5 bg-white text-tinta border border-black/10 rounded-lg px-2.5 py-1.5 text-xs font-semibold shadow-suave hover:bg-black/5 transition"
           >
-            <Icon name="left" size={13} /> Perú
+            <Icon name="left" size={13} /> {tr('volver_peru', idioma)}
           </button>
         )}
 
         {locError && (
           <div className="absolute bottom-10 left-2 right-2 z-[1000] bg-white/95 border border-riesgo/30 text-riesgo text-xs rounded-lg px-2.5 py-1.5">
-            {locError}
+            {tr('loc_error', idioma)}
           </div>
         )}
 
@@ -441,7 +444,7 @@ export default function SedesINEN() {
 
           {userPos && (
             <Marker position={userPos} icon={userIcon()}>
-              <Popup><strong>Tu ubicación</strong></Popup>
+              <Popup><strong>{tr('tu_ubicacion', idioma)}</strong></Popup>
             </Marker>
           )}
 
@@ -468,13 +471,13 @@ export default function SedesINEN() {
                       onClick={() => seleccionar(s)}
                       style={{ background: s.color, color: '#fff', border: 'none', borderRadius: 7, padding: '4px 10px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}
                     >
-                      Ver ruta
+                      {tr('ver_ruta', idioma)}
                     </button>
                     <button
                       onClick={() => entrarCampus(s)}
                       style={{ background: '#fff', color: s.color, border: `1.5px solid ${s.color}`, borderRadius: 7, padding: '4px 10px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}
                     >
-                      Ver campus
+                      {tr('ver_campus', idioma)}
                     </button>
                   </div>
                 </div>
@@ -525,7 +528,7 @@ export default function SedesINEN() {
             <p className="font-semibold text-sm text-tinta truncate">{seleccionada.nombre}</p>
             <p className="text-xs text-tinta/55 truncate">{seleccionada.direccion}</p>
           </div>
-          {loadingRoute && <p className="text-xs text-marca-600 animate-pulse shrink-0">Calculando…</p>}
+          {loadingRoute && <p className="text-xs text-marca-600 animate-pulse shrink-0">{tr('calculando', idioma)}</p>}
           {route && !loadingRoute && (
             <div className="flex gap-3 shrink-0 text-xs font-semibold text-tinta/70">
               <span className="flex items-center gap-1"><Icon name="clock" size={13} className="text-marca-600" />{formatDur(route.durationMin)}</span>
@@ -536,7 +539,7 @@ export default function SedesINEN() {
             onClick={() => entrarCampus(seleccionada)}
             className="shrink-0 text-xs font-semibold text-marca-600 border border-marca-200 rounded-lg px-2 py-1 hover:bg-marca-50 transition"
           >
-            Campus →
+            {tr('campus_btn', idioma)}
           </button>
         </div>
       )}
@@ -555,7 +558,7 @@ export default function SedesINEN() {
               <p className="text-[10px] text-tinta/45 uppercase tracking-wide mt-0.5">{s.region}</p>
               {nearest?.id === s.id && userPos && (
                 <span className="inline-block mt-1 text-[10px] font-bold px-1.5 py-px rounded-full text-white" style={{ background: s.color }}>
-                  ★ Más cercana
+                  {tr('mas_cercana', idioma)}
                 </span>
               )}
             </button>
