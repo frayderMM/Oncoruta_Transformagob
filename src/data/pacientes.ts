@@ -175,7 +175,7 @@ export function crearRutaInicial(params: {
 }
 
 // ===================================================================
-// PACIENTE 1 — María Quispe Huamán
+// PACIENTE 1 — María Quispe Gonzales
 // Dos rutas: Ruta 2026-001 (completada, Mama) + Ruta 2025-004 (finalizada, Cérvix)
 // ===================================================================
 
@@ -323,9 +323,9 @@ const rutaMaria001a: RutaDiagnostica = {
         ],
         proximoPasoDetalle: 'Esperar informe.',
         estudiosRealizados: [
-          { fecha: '10/06/2026', estudio: 'Mamografía bilateral', servicio: 'Imagenología', estado: 'Completado', documentoAsociado: 'Documento de estudio disponible', observacion: 'Estudio realizado' },
-          { fecha: '11/06/2026', estudio: 'Ecografía mamaria', servicio: 'Imagenología', estado: 'Completado', documentoAsociado: 'Documento de estudio disponible', observacion: 'Estudio realizado' },
-          { fecha: '12/06/2026', estudio: 'Procedimiento indicado por médico', servicio: 'Servicio correspondiente', estado: 'Completado', documentoAsociado: 'Registro de procedimiento disponible', observacion: 'Según indicación médica' },
+          { fecha: '10/06/2026', estudio: 'Mamografía bilateral', servicio: 'Imagenología', estado: 'Completado', documentoAsociado: 'Documento de estudio disponible', observacion: 'Estudio realizado', imagenUrl: '/documentos/10_mamografia_bilateral_mock.png' },
+          { fecha: '11/06/2026', estudio: 'Ecografía mamaria', servicio: 'Imagenología', estado: 'Completado', documentoAsociado: 'Documento de estudio disponible', observacion: 'Estudio realizado', imagenUrl: '/documentos/11_ecografia_mamaria_mock.png' },
+          { fecha: '12/06/2026', estudio: 'Procedimiento indicado por médico', servicio: 'Servicio correspondiente', estado: 'Completado', documentoAsociado: 'Registro de procedimiento disponible', observacion: 'Según indicación médica', imagenUrl: '/documentos/12_registro_procedimiento_mock.png' },
         ],
       },
     },
@@ -422,6 +422,8 @@ const rutaMaria001a: RutaDiagnostica = {
     { id: 'doc-dni', nombre: 'DNI', etapa: 'Admisión', fecha: '04/06/2026', estado: 'Validado', imagenUrl: '/documentos/01_validacion_dni_admision.png' },
     { id: 'doc-referencia', nombre: 'Hoja de referencia', etapa: 'Admisión', fecha: '04/06/2026', estado: 'Validado', imagenUrl: '/documentos/02_hoja_referencia.png' },
     { id: 'doc-ticket', nombre: 'Ticket de atención', etapa: 'Admisión', fecha: '04/06/2026', estado: 'Validado', imagenUrl: '/documentos/03_ticket_admision.png' },
+    { id: 'doc-examenes-previos-1', nombre: 'Examen previo presentado 1', etapa: 'Admisión', fecha: '04/06/2026', estado: 'Recibido', imagenUrl: '/documentos/examen1.png' },
+    { id: 'doc-examenes-previos-2', nombre: 'Examen previo presentado 2', etapa: 'Admisión', fecha: '04/06/2026', estado: 'Recibido', imagenUrl: '/documentos/examen2.png' },
     { id: 'doc-ficha-hc', nombre: 'Ficha de datos personales', etapa: 'Historia clínica', fecha: '05/06/2026', estado: 'Registrado', imagenUrl: '/documentos/04_ficha_historia_clinica.png' },
     { id: 'doc-primera-cita', nombre: 'Constancia de primera atención', etapa: 'Primera cita', fecha: '07/06/2026', estado: 'Disponible', imagenUrl: '/documentos/05_constancia_primera_cita.png' },
     { id: 'doc-orden', nombre: 'Orden de examen', etapa: 'Exámenes', fecha: '10/06/2026', estado: 'Disponible', imagenUrl: '/documentos/06_orden_examen.png' },
@@ -473,7 +475,7 @@ const maria: Paciente = {
   id: 'pac-001',
   dni: '****5678',
   nombres: 'María',
-  apellidos: 'Quispe Huamán',
+  apellidos: 'Quispe Gonzales',
   edad: 52,
   telefono: '999 ••• 999',
   procedencia: 'Ayacucho',

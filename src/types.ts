@@ -62,6 +62,7 @@ export interface EstudioRealizado {
   estado: string
   documentoAsociado: string
   observacion: string
+  imagenUrl?: string
 }
 
 export interface InformeDisponible {
