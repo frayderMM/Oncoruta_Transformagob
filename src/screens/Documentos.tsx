@@ -1,15 +1,29 @@
+import { useState } from 'react'
 import { useApp } from '../context/AppContext'
 import { useAccesibilidad } from '../context/AccesibilidadContext'
 import { tr } from '../data/i18n'
 import { Card, SectionTitle, BotonAudio, AvisoSeguridad } from '../components/ui/Primitivos'
 import ChecklistDocumentos from '../components/ChecklistDocumentos'
+import DocumentoViewerModal from '../components/DocumentoViewerModal'
 import Icon from '../components/ui/Icon'
+import type { DocumentoRuta } from '../types'
+
+const CHIP_ESTADO: Record<string, string> = {
+  Validado: 'bg-exito/12 text-exito',
+  Disponible: 'bg-marca-50 text-marca-700',
+  Registrado: 'bg-ayuda/10 text-ayuda',
+  Pendiente: 'bg-precaucion/15 text-[#9a7400]',
+}
 
 export default function Documentos() {
   const { pacienteActivo, marcarDocumento, enviarNotificacion } = useApp()
   const { idioma } = useAccesibilidad()
+  const [docViewer, setDocViewer] = useState<DocumentoRuta | null>(null)
   const p = pacienteActivo()
   if (!p) return null
+
+  const ruta = p.rutasDiagnosticas.find((r) => r.id === p.rutaActivaId)
+  const documentosRuta = ruta?.documentosRuta ?? []
 
   const pendientes = p.documentos.filter((d) => d.estado === 'Pendiente' || d.estado === 'Observado')
   const listos = p.documentos.filter((d) => d.estado === 'Recibido')
@@ -63,7 +77,59 @@ export default function Documentos() {
         </div>
       )}
 
+      {/* ── Documentos de la ruta diagnóstica ── */}
+      {documentosRuta.length > 0 && (
+        <div>
+          <SectionTitle sub="Documentos generados durante tu ruta diagnóstica. Toca Ver para revisar cada uno.">
+            Documentos de tu ruta
+          </SectionTitle>
+          <Card>
+            <div className="overflow-x-auto rounded-2xl border border-black/8">
+              <table className="w-full text-sm min-w-[480px]">
+                <thead>
+                  <tr className="border-b border-black/8">
+                    {['Documento', 'Etapa', 'Fecha', 'Estado', 'Acción'].map((h) => (
+                      <th key={h} className="text-left px-4 py-2.5 text-xs font-semibold text-tinta/55 uppercase tracking-wide whitespace-nowrap bg-black/[0.03]">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {documentosRuta.map((doc, i) => (
+                    <tr key={doc.id} className={`border-b border-black/5 last:border-0 ${i % 2 ? 'bg-black/[0.015]' : ''}`}>
+                      <td className="px-4 py-2.5 text-sm font-medium text-tinta/80">{doc.nombre}</td>
+                      <td className="px-4 py-2.5 text-sm text-tinta/70">{doc.etapa}</td>
+                      <td className="px-4 py-2.5 text-sm text-tinta/70 whitespace-nowrap">{doc.fecha}</td>
+                      <td className="px-4 py-2.5">
+                        <span className={`chip text-xs ${CHIP_ESTADO[doc.estado] ?? 'bg-black/6 text-tinta/60'}`}>
+                          {doc.estado}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2.5">
+                        {doc.imagenUrl && (
+                          <button
+                            onClick={() => setDocViewer(doc)}
+                            className="inline-flex items-center gap-1 text-xs text-marca-600 font-semibold hover:underline"
+                          >
+                            <Icon name="doc" size={13} /> Ver
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </div>
+      )}
+
       <AvisoSeguridad />
+
+      {docViewer && (
+        <DocumentoViewerModal doc={docViewer} onCerrar={() => setDocViewer(null)} />
+      )}
     </div>
   )
 }

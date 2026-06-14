@@ -3,7 +3,7 @@ import { useAccesibilidad } from '../context/AccesibilidadContext'
 import { tr } from '../data/i18n'
 import { evaluarRiesgo, MENSAJE_PACIENTE, ETAPA_META } from '../lib/semaforo'
 import { Card, SectionTitle, BotonAudio, AvisoSeguridad } from '../components/ui/Primitivos'
-import SemaforoRiesgo from '../components/SemaforoRiesgo'
+import EstadoAvance from '../components/EstadoAvance'
 import Icon from '../components/ui/Icon'
 
 export default function PacienteHome() {
@@ -130,12 +130,12 @@ export default function PacienteHome() {
         </Card>
       )}
 
-      {/* Semáforo operativo (explicado de forma simple) */}
+      {/* Estado de avance (operativo, no clínico) */}
       <div>
         <SectionTitle sub="Indica si tu proceso avanza a buen ritmo. No habla de tu salud.">
           ¿Cómo va tu proceso?
         </SectionTitle>
-        <SemaforoRiesgo nivel={ev.nivel} motivos={ev.motivos} size="lg" />
+        <EstadoAvance nivel={ev.nivel} motivos={ev.motivos} size="lg" />
       </div>
 
       <AvisoSeguridad />

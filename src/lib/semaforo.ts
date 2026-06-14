@@ -1,9 +1,10 @@
-import type { Paciente, Riesgo, EstadoEtapa, EstadoCita, EstadoDocumento } from '../types'
+import type { Paciente, Riesgo, EstadoEtapa, EstadoCita, EstadoDocumento, RutaDiagnostica } from '../types'
 
 // ===================================================================
-// Reglas del semáforo de riesgo (sección 21)
-// Mide RIESGO OPERATIVO de demora o pérdida de seguimiento.
-// NO es riesgo clínico. No usa imágenes, biopsias ni resultados.
+// Estado de avance de la ruta diagnóstica.
+// Mide el avance OPERATIVO para detectar retrasos y activar
+// acompañamiento. NO es valoración clínica ni diagnóstico médico.
+// No usa imágenes, biopsias ni resultados de laboratorio.
 // ===================================================================
 
 export interface EvaluacionRiesgo {
@@ -22,16 +23,19 @@ export function evaluarRiesgo(p: Paciente): EvaluacionRiesgo {
   const alertaRojaAbierta = p.alertas.some(
     (a) => a.nivel === 'rojo' && (a.estado === 'Nueva' || a.estado === 'Vista'),
   )
+  const etapaFinal =
+    p.etapaActual === 'Cita diagnóstica' ||
+    p.etapaActual === 'Cita diagnóstica / indicación médica'
 
-  // ---- ROJO: riesgo alto de demora o abandono ----
+  // ---- ROJO: Retraso prioritario ----
   if (p.diasSinAvance > 7) motivos.push(`Más de 7 días sin avance (${p.diasSinAvance}).`)
   if (p.citaPerdida) motivos.push('Perdió una cita importante.')
-  if (!tieneProximaCita && p.etapaActual !== 'Cita diagnóstica')
+  if (!tieneProximaCita && !etapaFinal)
     motivos.push('No tiene una próxima cita programada.')
-  if (alertaRojaAbierta) motivos.push('Tiene una alerta roja sin atender.')
+  if (alertaRojaAbierta) motivos.push('Tiene una alerta de retraso sin atender.')
   if (motivos.length > 0) return { nivel: 'rojo', motivos }
 
-  // ---- AMARILLO: posible demora o barrera ----
+  // ---- AMARILLO: Posible retraso ----
   if (docsCriticosPendientes) motivos.push('Tiene documentos importantes pendientes.')
   if (p.diasSinAvance >= 3 && p.diasSinAvance <= 7)
     motivos.push(`Entre 3 y 7 días sin avance (${p.diasSinAvance}).`)
@@ -41,16 +45,70 @@ export function evaluarRiesgo(p: Paciente): EvaluacionRiesgo {
     motivos.push('Sin cuidador y con baja alfabetización digital.')
   if (motivos.length > 0) return { nivel: 'amarillo', motivos }
 
-  // ---- VERDE: avance normal ----
+  // ---- VERDE: Avance normal ----
   motivos.push('Avance normal: documentos completos y próxima acción programada.')
   return { nivel: 'verde', motivos }
 }
 
-// ---- Etiquetas y estilos por nivel de riesgo (color + texto + icono) ----
+// Alias con nuevo nombre de cara al código nuevo
+export const evaluarEstadoAvance = evaluarRiesgo
+
+// Evaluación del estado de avance de una ruta específica (no necesariamente la activa)
+export function evaluarEstadoAvanceRuta(
+  ruta: RutaDiagnostica,
+  personales: {
+    esProvincia: boolean
+    bajaAlfabetizacion: boolean
+    cuidador?: { estado: string } | undefined
+  },
+): EvaluacionRiesgo {
+  if (ruta.estadoRuta === 'Finalizada') {
+    return { nivel: 'verde', motivos: ['Ruta finalizada correctamente.'] }
+  }
+  if (ruta.estadoRuta === 'Pausada') {
+    return { nivel: 'amarillo', motivos: ['Ruta en pausa.'] }
+  }
+
+  const motivos: string[] = []
+  const docsCriticosPendientes = ruta.documentos.some(
+    (d) => d.obligatorio && (d.estado === 'Pendiente' || d.estado === 'Observado'),
+  )
+  const tieneProximaCita = ruta.citas.some(
+    (c) => c.estado === 'Programada' || c.estado === 'Confirmada',
+  )
+  const alertaRojaAbierta = ruta.alertas.some(
+    (a) => a.nivel === 'rojo' && (a.estado === 'Nueva' || a.estado === 'Vista'),
+  )
+  const citaPerdida = ruta.citas.some((c) => c.estado === 'Perdida')
+  const etapaFinal =
+    ruta.etapaActual === 'Cita diagnóstica' ||
+    ruta.etapaActual === 'Cita diagnóstica / indicación médica'
+
+  if (ruta.diasSinAvance > 7) motivos.push(`Más de 7 días sin avance (${ruta.diasSinAvance}).`)
+  if (citaPerdida) motivos.push('Perdió una cita importante.')
+  if (!tieneProximaCita && !etapaFinal)
+    motivos.push('No tiene una próxima cita programada.')
+  if (alertaRojaAbierta) motivos.push('Tiene una alerta de retraso sin atender.')
+  if (motivos.length > 0) return { nivel: 'rojo', motivos }
+
+  if (docsCriticosPendientes) motivos.push('Tiene documentos importantes pendientes.')
+  if (ruta.diasSinAvance >= 3 && ruta.diasSinAvance <= 7)
+    motivos.push(`Entre 3 y 7 días sin avance (${ruta.diasSinAvance}).`)
+  if (personales.esProvincia && docsCriticosPendientes)
+    motivos.push('Viene de provincia con documentos incompletos.')
+  if (!personales.cuidador && personales.bajaAlfabetizacion)
+    motivos.push('Sin cuidador y con baja alfabetización digital.')
+  if (motivos.length > 0) return { nivel: 'amarillo', motivos }
+
+  motivos.push('Avance normal: documentos completos y próxima acción programada.')
+  return { nivel: 'verde', motivos }
+}
+
+// ---- Etiquetas y estilos por estado de avance ----
 export const RIESGO_META: Record<Riesgo, { label: string; icono: string; clase: string; punto: string }> = {
   verde: { label: 'Avance normal', icono: '✓', clase: 'bg-exito/12 text-exito', punto: 'bg-exito' },
-  amarillo: { label: 'Posible demora', icono: '!', clase: 'bg-precaucion/15 text-[#9a7400]', punto: 'bg-precaucion' },
-  rojo: { label: 'Riesgo alto', icono: '⚠', clase: 'bg-riesgo/12 text-riesgo', punto: 'bg-riesgo' },
+  amarillo: { label: 'Posible retraso', icono: '!', clase: 'bg-precaucion/15 text-[#9a7400]', punto: 'bg-precaucion' },
+  rojo: { label: 'Retraso prioritario', icono: '⚠', clase: 'bg-riesgo/12 text-riesgo', punto: 'bg-riesgo' },
 }
 
 export const MENSAJE_PACIENTE: Record<Riesgo, string> = {

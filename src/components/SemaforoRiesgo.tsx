@@ -1,8 +1,8 @@
 import type { Riesgo } from '../types'
 import { RIESGO_META } from '../lib/semaforo'
 
-/** Semáforo de riesgo operativo. Nunca depende solo del color:
- *  muestra punto + icono + texto. */
+/** Estado de avance de la ruta diagnóstica. Nunca depende solo del color:
+ *  muestra punto + icono + texto. No es una valoración clínica. */
 export default function SemaforoRiesgo({
   nivel,
   motivos,
@@ -41,7 +41,7 @@ export default function SemaforoRiesgo({
         </div>
         <div>
           <p className="text-xs text-tinta/50 ac-muted font-medium uppercase tracking-wide">
-            Semáforo de riesgo operativo
+            Estado de avance de la ruta
           </p>
           <p className={`font-display font-bold ${size === 'lg' ? 'text-lg' : ''}`}>
             <span aria-hidden="true">{meta.icono}</span> {meta.label}

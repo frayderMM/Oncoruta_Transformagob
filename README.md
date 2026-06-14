@@ -88,7 +88,7 @@ Mide el riesgo de **demora o pérdida de seguimiento**. No usa imágenes, biopsi
 
 - 🟢 **Verde — Avance normal:** documentos completos, cita programada, menos de 3 días sin avance.
 - 🟡 **Amarillo — Posible demora:** documentos importantes pendientes, 3–7 días sin avance, provincia con documentos incompletos, o sin cuidador y baja alfabetización digital.
-- 🔴 **Rojo — Riesgo alto:** más de 7 días sin avance, cita perdida, sin próxima cita, o alerta roja sin atender.
+- 🔴 **Rojo — Retraso prioritario:** más de 7 días sin avance, cita perdida, sin próxima cita, o alerta roja sin atender.
 
 El semáforo nunca depende solo del color: siempre muestra **punto + ícono + texto** (accesibilidad).
 

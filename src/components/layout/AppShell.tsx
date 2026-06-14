@@ -65,7 +65,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <BarraAccesibilidad />
 
       {/* Cabecera */}
-      <header className="sticky top-0 z-30 bg-white/85 backdrop-blur border-b border-black/5">
+      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-black/5">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
           <Logo />
 
@@ -77,7 +77,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
                   key={it.p}
                   onClick={() => ir(it.p)}
                   className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition ${
-                    pantalla === it.p
+                    pantalla === it.p || (pantalla === 'historial' && it.p === 'ruta')
                       ? 'bg-marca-50 text-marca-700'
                       : 'text-tinta/60 hover:text-tinta hover:bg-black/5'
                   }`}
@@ -103,6 +103,24 @@ export default function AppShell({ children }: { children: ReactNode }) {
             </button>
           </div>
         </div>
+
+        {/* Sub-header de página para pantallas de detalle */}
+        {pantalla === 'historial' && (
+          <div className="border-t border-black/5 bg-marca-50/60">
+            <div className="max-w-6xl mx-auto px-4 h-10 flex items-center gap-3">
+              <button
+                onClick={() => ir('ruta')}
+                className="flex items-center gap-1.5 text-sm text-tinta/55 hover:text-marca-600 transition font-medium"
+              >
+                <Icon name="left" size={15} /> Mi Ruta
+              </button>
+              <Icon name="right" size={13} className="text-black/20" />
+              <span className="text-sm font-semibold text-marca-700">
+                Historial clínico resumido
+              </span>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Contenido */}

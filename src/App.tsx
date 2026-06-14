@@ -14,6 +14,7 @@ import PanelINEN from './screens/PanelINEN'
 import DetallePaciente from './screens/DetallePaciente'
 import Accesibilidad from './screens/Accesibilidad'
 import AdminPanel from './screens/AdminPanel'
+import HistorialClinico from './screens/HistorialClinico'
 
 import SedesINEN from './screens/SedesINEN'
 import ChatIANoClinico from './components/ChatIANoClinico'
@@ -51,6 +52,9 @@ export default function App() {
       break
     case 'ruta':
       contenido = <MiRuta />
+      break
+    case 'historial':
+      contenido = <HistorialClinico />
       break
     case 'citas':
       contenido = <MisCitas />

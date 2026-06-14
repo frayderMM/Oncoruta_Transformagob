@@ -4,7 +4,7 @@ import { tr } from '../data/i18n'
 import { evaluarRiesgo, MENSAJE_PACIENTE } from '../lib/semaforo'
 import { Card, SectionTitle, BotonAudio, AvisoSeguridad } from '../components/ui/Primitivos'
 import RutaTimeline from '../components/RutaTimeline'
-import SemaforoRiesgo from '../components/SemaforoRiesgo'
+import EstadoAvance from '../components/EstadoAvance'
 import Icon from '../components/ui/Icon'
 
 export default function CuidadorHome() {
@@ -14,9 +14,15 @@ export default function CuidadorHome() {
   if (!p) return null
 
   const ev = evaluarRiesgo(p)
+  const rutaActiva = p.rutasDiagnosticas.find((r) => r.id === p.rutaActivaId)
   const proximaCita = p.citas.find((c) => c.estado === 'Programada' || c.estado === 'Confirmada')
-  const docsPendientes = p.documentos.filter((d) => d.estado === 'Pendiente' || d.estado === 'Observado')
+  const docsPendientes = p.documentos.filter(
+    (d) => d.estado === 'Pendiente' || d.estado === 'Observado',
+  )
   const alertasAbiertas = p.alertas.filter((a) => a.estado === 'Nueva' || a.estado === 'Vista')
+  const rutasAnteriores = p.rutasDiagnosticas.filter(
+    (r) => r.id !== p.rutaActivaId && r.estadoRuta === 'Finalizada',
+  )
 
   return (
     <div className="space-y-5 animate-fade-up">
@@ -27,17 +33,26 @@ export default function CuidadorHome() {
           <p className="text-white/85 inline-flex items-center gap-2">
             <Icon name="users" size={18} /> Estás acompañando a
           </p>
-          <h1 className="font-display text-3xl font-extrabold">{p.nombres} {p.apellidos.split(' ')[0]}</h1>
-          <p className="mt-2 text-white/90 leading-relaxed max-w-lg">{MENSAJE_PACIENTE[ev.nivel]}</p>
+          <h1 className="font-display text-3xl font-extrabold">
+            {p.nombres} {p.apellidos.split(' ')[0]}
+          </h1>
+          {rutaActiva && (
+            <p className="text-white/80 text-sm mt-1">
+              {rutaActiva.codigo} · {rutaActiva.tipoSospecha} · {rutaActiva.etapaActual}
+            </p>
+          )}
+          <p className="mt-2 text-white/90 leading-relaxed max-w-lg">
+            {MENSAJE_PACIENTE[ev.nivel]}
+          </p>
         </div>
       </div>
 
-      {/* Cómo va su proceso */}
+      {/* Estado de avance */}
       <div>
         <SectionTitle sub="Indica si el proceso avanza a buen ritmo. No habla de su salud.">
           ¿Cómo va su proceso?
         </SectionTitle>
-        <SemaforoRiesgo nivel={ev.nivel} motivos={ev.motivos} size="lg" />
+        <EstadoAvance nivel={ev.nivel} motivos={ev.motivos} size="lg" />
       </div>
 
       {/* Próximo paso + audio */}
@@ -48,9 +63,13 @@ export default function CuidadorHome() {
           </span>
           <div className="flex-1">
             <p className="text-sm font-semibold text-marca-700">Cómo puedes ayudar ahora</p>
-            <p className="text-tinta ac-ink mt-0.5 font-medium leading-relaxed">{p.proximoPaso}</p>
+            <p className="text-tinta ac-ink mt-0.5 font-medium leading-relaxed">
+              {p.proximoPaso}
+            </p>
             <div className="mt-2">
-              <BotonAudio texto={`${p.nombres} está en la etapa ${p.etapaActual}. ${p.proximoPaso}`} />
+              <BotonAudio
+                texto={`${p.nombres} está en la etapa ${p.etapaActual}. ${p.proximoPaso}`}
+              />
             </div>
           </div>
         </div>
@@ -66,7 +85,9 @@ export default function CuidadorHome() {
           {proximaCita ? (
             <div className="mt-2">
               <p className="font-display font-bold text-tinta ac-ink">{proximaCita.servicio}</p>
-              <p className="text-sm text-tinta/65 ac-muted mt-0.5">{proximaCita.fecha} · {proximaCita.hora}</p>
+              <p className="text-sm text-tinta/65 ac-muted mt-0.5">
+                {proximaCita.fecha} · {proximaCita.hora}
+              </p>
               <p className="text-sm text-tinta/65 ac-muted">{proximaCita.lugar}</p>
               <button
                 onClick={() =>
@@ -95,7 +116,8 @@ export default function CuidadorHome() {
             <ul className="mt-2 space-y-1.5 text-sm text-tinta/70 ac-muted">
               {docsPendientes.map((d) => (
                 <li key={d.id} className="flex items-start gap-2">
-                  <Icon name="alert" size={15} className="text-precaucion mt-0.5 shrink-0" /> {d.nombre}
+                  <Icon name="alert" size={15} className="text-precaucion mt-0.5 shrink-0" />{' '}
+                  {d.nombre}
                 </li>
               ))}
             </ul>
@@ -117,7 +139,9 @@ export default function CuidadorHome() {
             <div>
               <p className="font-semibold text-tinta ac-ink">Avisos importantes</p>
               {alertasAbiertas.map((a) => (
-                <p key={a.id} className="text-sm text-tinta/65 ac-muted mt-1">{a.mensaje}</p>
+                <p key={a.id} className="text-sm text-tinta/65 ac-muted mt-1">
+                  {a.mensaje}
+                </p>
               ))}
             </div>
           </div>
@@ -131,6 +155,30 @@ export default function CuidadorHome() {
           <RutaTimeline ruta={p.ruta} etapaActual={p.etapaActual} compacto />
         </Card>
       </div>
+
+      {/* Rutas anteriores (solo resumen) */}
+      {rutasAnteriores.length > 0 && (
+        <div>
+          <SectionTitle sub="Procesos anteriores completados.">Rutas anteriores</SectionTitle>
+          <div className="space-y-2">
+            {rutasAnteriores.map((r) => (
+              <div
+                key={r.id}
+                className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-2xl border border-black/8 bg-black/[0.02] text-sm"
+              >
+                <div>
+                  <p className="font-semibold text-tinta ac-ink">{r.codigo}</p>
+                  <p className="text-xs text-tinta/55 ac-muted mt-0.5">
+                    {r.tipoIngreso} · {r.tipoSospecha}
+                    {r.fechaCierre ? ` · Cerrada: ${r.fechaCierre}` : ''}
+                  </p>
+                </div>
+                <span className="chip text-xs bg-exito/12 text-exito">{r.estadoRuta}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <AvisoSeguridad />
     </div>
