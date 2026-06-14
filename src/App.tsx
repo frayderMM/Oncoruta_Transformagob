@@ -14,6 +14,7 @@ import PanelINEN from './screens/PanelINEN'
 import DetallePaciente from './screens/DetallePaciente'
 import Accesibilidad from './screens/Accesibilidad'
 import AdminPanel from './screens/AdminPanel'
+import HistorialClinico from './screens/HistorialClinico'
 
 import ChatIANoClinico from './components/ChatIANoClinico'
 import { SectionTitle, AvisoSeguridad } from './components/ui/Primitivos'
@@ -50,6 +51,9 @@ export default function App() {
       break
     case 'ruta':
       contenido = <MiRuta />
+      break
+    case 'historial':
+      contenido = <HistorialClinico />
       break
     case 'citas':
       contenido = <MisCitas />

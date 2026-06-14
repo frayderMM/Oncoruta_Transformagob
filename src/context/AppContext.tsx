@@ -5,13 +5,11 @@ import {
   useCallback,
   type ReactNode,
 } from 'react'
-import type { Paciente, Rol, NotificacionDemo, AccionINEN } from '../types'
-import { PACIENTES, PACIENTE_DEMO_ID } from '../data/pacientes'
+import type { Paciente, Rol, NotificacionDemo, AccionINEN, RutaDiagnostica, Sospecha, TipoIngreso } from '../types'
+import { PACIENTES, PACIENTE_DEMO_ID, crearRutaInicial } from '../data/pacientes'
 
 // ===================================================================
 // AppContext = sesión + navegación + "API" simulada en memoria.
-// Todas las mutaciones (confirmar cita, atender alerta, registrar
-// acción, etc.) actualizan el estado para que la demo sea interactiva.
 // ===================================================================
 
 export type Pantalla =
@@ -19,28 +17,34 @@ export type Pantalla =
   | 'registro'
   | 'home'
   | 'ruta'
+  | 'historial'
   | 'citas'
   | 'documentos'
   | 'alertas'
   | 'cuidador'
   | 'asistente'
   | 'accesibilidad'
-  // INEN
   | 'panel'
   | 'detalle'
-  // Admin
   | 'admin'
 
 interface Sesion {
   rol: Rol
   nombre: string
-  pacienteId?: string // paciente asociada (paciente o cuidador)
+  pacienteId?: string
+}
+
+export interface CrearRutaParams {
+  tipoIngreso: TipoIngreso
+  tipoSospecha: Sospecha
+  motivoIngreso: string
+  fechaInicio: string
 }
 
 interface AppState {
   sesion: Sesion | null
   pantalla: Pantalla
-  pacienteSeleccionadoId: string | null // para el detalle INEN
+  pacienteSeleccionadoId: string | null
   pacientes: Paciente[]
   notificaciones: NotificacionDemo[]
 
@@ -51,8 +55,9 @@ interface AppState {
 
   pacienteActivo: () => Paciente | undefined
   getPaciente: (id: string) => Paciente | undefined
+  getRutaActiva: (pacienteId: string) => RutaDiagnostica | undefined
 
-  // Acciones (API simulada)
+  // Acciones (API simulada) — operan sobre la ruta activa
   confirmarCita: (pacienteId: string, citaId: string) => void
   atenderAlerta: (pacienteId: string, alertaId: string) => void
   registrarAccion: (pacienteId: string, accion: Omit<AccionINEN, 'id' | 'fecha'>) => void
@@ -63,6 +68,10 @@ interface AppState {
   ) => void
   enviarNotificacion: (n: Omit<NotificacionDemo, 'id' | 'hora'>) => void
   descartarNotificacion: (id: string) => void
+
+  // Gestión de rutas diagnósticas
+  crearRutaDiagnostica: (pacienteId: string, params: CrearRutaParams) => void
+  marcarRutaActiva: (pacienteId: string, rutaId: string) => void
 }
 
 const Ctx = createContext<AppState | null>(null)
@@ -84,6 +93,23 @@ const NOMBRE_ROL: Record<Rol, string> = {
 function ahora(): string {
   const d = new Date()
   return d.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })
+}
+
+// Sincroniza los campos legacy del paciente desde la ruta indicada
+function syncLegacyDesdeRuta(p: Paciente, ruta: RutaDiagnostica): Paciente {
+  return {
+    ...p,
+    tipoSospecha: ruta.tipoSospecha,
+    etapaActual: ruta.etapaActual,
+    diasSinAvance: ruta.diasSinAvance,
+    proximoPaso: ruta.proximoPaso,
+    ruta: ruta.etapas,
+    documentos: ruta.documentos,
+    citas: ruta.citas,
+    alertas: ruta.alertas,
+    acciones: ruta.acciones,
+    citaPerdida: ruta.citas.some((c) => c.estado === 'Perdida'),
+  }
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -127,9 +153,41 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return pacientes.find((p) => p.id === sesion.pacienteId)
   }, [sesion, pacientes])
 
+  const getRutaActiva = useCallback(
+    (pacienteId: string): RutaDiagnostica | undefined => {
+      const p = pacientes.find((p) => p.id === pacienteId)
+      if (!p) return undefined
+      return p.rutasDiagnosticas.find((r) => r.id === p.rutaActivaId)
+    },
+    [pacientes],
+  )
+
   // ---------- Mutaciones ----------
+  // update: aplica fn sobre el paciente Y sincroniza la ruta activa en rutasDiagnosticas
   const update = (id: string, fn: (p: Paciente) => Paciente) =>
-    setPacientes((prev) => prev.map((p) => (p.id === id ? fn(p) : p)))
+    setPacientes((prev) =>
+      prev.map((p) => {
+        if (p.id !== id) return p
+        const updated = fn(p)
+        // Sync cambios legacy de vuelta a rutasDiagnosticas[rutaActivaId]
+        const syncedRutas = updated.rutasDiagnosticas.map((r) =>
+          r.id === updated.rutaActivaId
+            ? {
+                ...r,
+                citas: updated.citas,
+                alertas: updated.alertas,
+                documentos: updated.documentos,
+                acciones: updated.acciones,
+                etapaActual: updated.etapaActual,
+                diasSinAvance: updated.diasSinAvance,
+                proximoPaso: updated.proximoPaso,
+                etapas: updated.ruta,
+              }
+            : r,
+        )
+        return { ...updated, rutasDiagnosticas: syncedRutas }
+      }),
+    )
 
   const confirmarCita = useCallback((pacienteId: string, citaId: string) => {
     update(pacienteId, (p) => ({
@@ -170,7 +228,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     update(pacienteId, (p) => ({
       ...p,
       documentos: p.documentos.map((d) =>
-        d.id === docId ? { ...d, estado: 'Recibido' as const, observacion: 'Marcado como listo.' } : d,
+        d.id === docId
+          ? { ...d, estado: 'Recibido' as const, observacion: 'Marcado como listo.' }
+          : d,
       ),
     }))
   }, [])
@@ -201,6 +261,51 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setNotificaciones((prev) => prev.filter((n) => n.id !== id))
   }, [])
 
+  // ---------- Gestión de rutas diagnósticas ----------
+
+  const crearRutaDiagnostica = useCallback(
+    (pacienteId: string, params: CrearRutaParams) => {
+      setPacientes((prev) =>
+        prev.map((p) => {
+          if (p.id !== pacienteId) return p
+          const nuevaId = 'ruta-' + Date.now().toString(36)
+          const year = new Date().getFullYear()
+          const seq = String(Math.floor(Math.random() * 900) + 100)
+          const nuevoCodigo = `Ruta ${year}-${seq}`
+          const nuevaRuta = crearRutaInicial({
+            id: nuevaId,
+            codigo: nuevoCodigo,
+            ...params,
+          })
+          const rutasActualizadas = p.rutasDiagnosticas.map((r) =>
+            r.id === p.rutaActivaId && r.estadoRuta === 'Activa'
+              ? { ...r, estadoRuta: 'Pausada' as const }
+              : r,
+          )
+          const updatedPaciente: Paciente = {
+            ...p,
+            rutasDiagnosticas: [...rutasActualizadas, nuevaRuta],
+            rutaActivaId: nuevaId,
+          }
+          return syncLegacyDesdeRuta(updatedPaciente, nuevaRuta)
+        }),
+      )
+    },
+    [],
+  )
+
+  const marcarRutaActiva = useCallback((pacienteId: string, rutaId: string) => {
+    setPacientes((prev) =>
+      prev.map((p) => {
+        if (p.id !== pacienteId) return p
+        const ruta = p.rutasDiagnosticas.find((r) => r.id === rutaId)
+        if (!ruta) return p
+        const updatedPaciente: Paciente = { ...p, rutaActivaId: rutaId }
+        return syncLegacyDesdeRuta(updatedPaciente, ruta)
+      }),
+    )
+  }, [])
+
   return (
     <Ctx.Provider
       value={{
@@ -215,6 +320,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         seleccionarPaciente,
         pacienteActivo,
         getPaciente,
+        getRutaActiva,
         confirmarCita,
         atenderAlerta,
         registrarAccion,
@@ -222,6 +328,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         registrarCuidador,
         enviarNotificacion,
         descartarNotificacion,
+        crearRutaDiagnostica,
+        marcarRutaActiva,
       }}
     >
       {children}

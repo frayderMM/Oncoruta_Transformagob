@@ -62,13 +62,20 @@ body {
 
 /* Scrollbar discreta */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-thumb {
   background: #d9d2ea;
   border-radius: 999px;
 }
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Ocultar scrollbar visualmente (mantiene funcionalidad) */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* Componentes reutilizables */
 @layer components {

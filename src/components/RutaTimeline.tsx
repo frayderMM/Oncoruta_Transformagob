@@ -4,22 +4,31 @@ import Icon, { type IconName } from './ui/Icon'
 import { BotonAudio } from './ui/Primitivos'
 
 const ICONO_ETAPA: Record<NombreEtapa, IconName> = {
+  // Ruta primera vez
   Admisión: 'doc',
   'Historia clínica': 'note',
   'Primera cita': 'calendar',
   Exámenes: 'search',
   Informe: 'flag',
   'Cita diagnóstica': 'heart',
+  // Ruta reingreso
+  Reingreso: 'users',
+  'Validación de datos y documentos': 'doc',
+  'Programación de cita': 'calendar',
+  'Evaluación médica': 'heart',
+  'Cita diagnóstica / indicación médica': 'note',
 }
 
 export default function RutaTimeline({
   ruta,
   etapaActual,
   compacto = false,
+  onVerDetalle,
 }: {
   ruta: Etapa[]
   etapaActual: NombreEtapa
   compacto?: boolean
+  onVerDetalle?: (etapa: Etapa) => void
 }) {
   return (
     <ol className="relative">
@@ -57,11 +66,15 @@ export default function RutaTimeline({
               <Icon name={ICONO_ETAPA[etapa.nombre]} size={20} />
             </span>
 
-            {/* Contenido */}
+            {/* Contenido — toda la tarjeta es clicable si hay detalle */}
             <div
+              role={etapa.detalle && onVerDetalle ? 'button' : undefined}
+              tabIndex={etapa.detalle && onVerDetalle ? 0 : undefined}
+              onClick={() => etapa.detalle && onVerDetalle?.(etapa)}
+              onKeyDown={(e) => e.key === 'Enter' && etapa.detalle && onVerDetalle?.(etapa)}
               className={`tarjeta ac-surface px-4 py-3 ${
                 esActual ? 'ring-2 ring-marca-200' : ''
-              }`}
+              } ${etapa.detalle && onVerDetalle ? 'cursor-pointer hover:border-marca-200 hover:shadow-md transition-shadow' : ''}`}
             >
               <div className="flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
@@ -70,9 +83,16 @@ export default function RutaTimeline({
                     <span className="chip bg-marca-500 text-white text-xs">Estás aquí</span>
                   )}
                 </div>
-                <span className={`chip text-xs border ${meta.clase}`}>
-                  <span aria-hidden="true">{meta.icono}</span> {etapa.estado}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className={`chip text-xs border ${meta.clase}`}>
+                    <span aria-hidden="true">{meta.icono}</span> {etapa.estado}
+                  </span>
+                  {etapa.detalle && onVerDetalle && (
+                    <span className="text-xs text-marca-600 font-semibold flex items-center gap-0.5">
+                      <Icon name="right" size={12} /> Ver detalle
+                    </span>
+                  )}
+                </div>
               </div>
 
               {!compacto && (
@@ -86,7 +106,9 @@ export default function RutaTimeline({
                   {etapa.fecha ? `📅 ${etapa.fecha}` : 'Sin fecha aún'}
                 </span>
                 {esActual && !compacto && (
-                  <BotonAudio texto={`${etapa.nombre}. ${etapa.descripcionSimple}`} label="Escuchar" />
+                  <span onClick={(e) => e.stopPropagation()}>
+                    <BotonAudio texto={`${etapa.nombre}. ${etapa.descripcionSimple}`} label="Escuchar" />
+                  </span>
                 )}
               </div>
             </div>
