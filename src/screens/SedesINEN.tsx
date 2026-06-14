@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -474,11 +475,20 @@ export default function SedesINEN({ hideTitle }: { hideTitle?: boolean } = {}) {
   const [pasoActual, setPasoActual] = useState(0)
   const [busqueda, setBusqueda] = useState('')
   const [puntoResaltado, setPuntoResaltado] = useState<string | null>(null)
+  const searchRef = useRef<HTMLDivElement>(null)
+  const [dropPos, setDropPos] = useState({ top: 0, left: 0, width: 0 })
   const [rutaImagenModal, setRutaImagenModal] = useState<PuntoINEN | null>(null)
   const [qrScanner, setQrScanner] = useState(false)
   const [puntoInfo, setPuntoInfo] = useState<PuntoINEN | null>(null)
 
   const vistaInterna = campusSede !== null
+
+  useEffect(() => {
+    if (busqueda.trim().length >= 2 && searchRef.current) {
+      const r = searchRef.current.getBoundingClientRect()
+      setDropPos({ top: r.bottom + 2, left: r.left, width: r.width })
+    }
+  }, [busqueda])
 
   const resultadosBusqueda = busqueda.trim().length >= 2
     ? PUNTOS_INEN.filter(p => {
@@ -619,8 +629,8 @@ export default function SedesINEN({ hideTitle }: { hideTitle?: boolean } = {}) {
       {!hideTitle && <h2 className="font-display text-lg font-bold text-tinta">{tr('sedes_titulo', idioma)}</h2>}
 
       {/* ── Barra de búsqueda + QR — FUERA del mapa ── */}
-      <div className="relative flex gap-2">
-        <div className="flex-1 relative">
+      <div className="flex gap-2">
+        <div className="flex-1 relative" ref={searchRef}>
           <input
             type="text"
             value={busqueda}
@@ -641,42 +651,38 @@ export default function SedesINEN({ hideTitle }: { hideTitle?: boolean } = {}) {
           <span className="text-base leading-none">⬛</span>
           <span className="hidden sm:inline">Escanear QR</span>
         </button>
-
-        {/* Resultados de búsqueda */}
-        {resultadosBusqueda.length > 0 && (
-          <div className="absolute top-full left-0 right-12 sm:right-0 mt-1 z-50 bg-white rounded-2xl shadow-2xl border border-black/8 overflow-hidden max-h-72 overflow-y-auto">
-            {resultadosBusqueda.map(p => (
-              <button
-                key={p.id}
-                onClick={() => irAPunto(p)}
-                className="flex items-start gap-3 w-full text-left px-4 py-3 border-b border-black/5 last:border-0 hover:bg-gray-50 transition"
-              >
-                <span className="text-2xl shrink-0 mt-0.5">{p.emoji}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-tinta">{p.label}</p>
-                  <p className="text-xs text-tinta/55 mt-0.5">{p.detalle}</p>
-                  <div className="flex flex-wrap gap-1.5 mt-1">
-                    {p.edificio && (
-                      <span className="text-[10px] font-semibold bg-black/5 text-tinta/60 rounded-full px-2 py-0.5">🏢 {p.edificio}</span>
-                    )}
-                    {p.piso && (
-                      <span className="text-[10px] font-semibold bg-black/5 text-tinta/60 rounded-full px-2 py-0.5">🔢 {p.piso}</span>
-                    )}
-                    {p.rutaInterna && (
-                      <span className="text-[10px] font-bold text-white rounded-full px-2 py-0.5" style={{ background: p.color }}>🗺️ Ruta disponible</span>
-                    )}
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
-        {busqueda.trim().length >= 2 && resultadosBusqueda.length === 0 && (
-          <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white rounded-2xl shadow-sm border border-black/8 px-4 py-3 text-sm text-tinta/50">
-            Sin resultados para &ldquo;{busqueda}&rdquo;
-          </div>
-        )}
       </div>
+
+      {/* Resultados de búsqueda — portal en body para escapar transforms/overflow */}
+      {resultadosBusqueda.length > 0 && createPortal(
+        <div
+          className="bg-white rounded-xl shadow-xl border border-black/10 overflow-hidden"
+          style={{ position: 'fixed', zIndex: 99999, top: dropPos.top, left: dropPos.left, width: dropPos.width }}
+        >
+          {resultadosBusqueda.map(p => (
+            <button
+              key={p.id}
+              onMouseDown={e => e.preventDefault()}
+              onClick={() => irAPunto(p)}
+              className="flex items-center gap-2.5 w-full text-left px-3 py-2 border-b border-black/5 last:border-0 hover:bg-marca-50 transition"
+            >
+              <svg className="shrink-0 text-tinta/30" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <span className="text-sm text-tinta/80 truncate">{p.label.replace(/\s*INEN\s*/g, '').trim()}</span>
+              <span className="ml-auto shrink-0 text-base leading-none">{p.emoji}</span>
+            </button>
+          ))}
+        </div>,
+        document.body
+      )}
+      {busqueda.trim().length >= 2 && resultadosBusqueda.length === 0 && createPortal(
+        <div
+          className="bg-white rounded-xl shadow-lg border border-black/10 px-3 py-2 text-sm text-tinta/45"
+          style={{ position: 'fixed', zIndex: 99999, top: dropPos.top, left: dropPos.left, width: dropPos.width }}
+        >
+          Sin resultados para &ldquo;{busqueda}&rdquo;
+        </div>,
+        document.body
+      )}
 
       {/* ── Mapa ── */}
       <div
