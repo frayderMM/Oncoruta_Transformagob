@@ -122,61 +122,17 @@ type PuntoINEN = (typeof PUNTOS_INEN)[number]
 // ──────────────────────────────────────────────
 // Guía paso a paso — Proceso de Admisión INEN
 // ──────────────────────────────────────────────
+// x%, y% = posición del paso sobre la imagen del plano interno
 const PASOS_ADMISION = [
-  {
-    icon: '🚪',
-    titulo: 'Ingresa al INEN',
-    fase: 'Llegada',
-    desc: 'Entra por el Ingreso Principal (Av. Angamos Este 2520). El personal de vigilancia te orientará hacia el área de admisión en el primer piso.',
-  },
-  {
-    icon: '🎫',
-    titulo: 'Obtén tu ticket',
-    fase: 'Paso 1 — Ticket',
-    desc: 'Dirígete a la ventanilla central de "Ticket de Admisión" (al centro del pabellón). Recibirás un número de turno para ser atendido.',
-  },
-  {
-    icon: '🪑',
-    titulo: 'Sala de espera — Admisión',
-    fase: 'Espera',
-    desc: 'Siéntate en la "Sala de Espera Admisión" (zona central-superior). Escucha el llamado de tu número en el sistema de turnos o pantallas.',
-  },
-  {
-    icon: '📄',
-    titulo: 'Presenta tus documentos',
-    fase: 'Paso 2 — Documentos clínicos',
-    desc: 'Cuando te llamen, acércate a los "Módulos de Admisión". Presenta: DNI, informe médico externo, biopsia u otros exámenes solicitados.',
-  },
-  {
-    icon: '🔍',
-    titulo: 'Revisión de documentos',
-    fase: 'Paso 3 — Revisión',
-    desc: 'El personal verifica y valida tu documentación. Confirman que cumples los requisitos para apertura de Historia Clínica en el INEN.',
-  },
-  {
-    icon: '📋',
-    titulo: 'Generación de Historia Clínica',
-    fase: 'Paso 4 — Apertura HC',
-    desc: 'Se crea tu Historia Clínica (HC) en el sistema del INEN. Guarda el número de HC: lo necesitarás en todas tus visitas futuras.',
-  },
-  {
-    icon: '🚶',
-    titulo: 'Ve al módulo de citas',
-    fase: 'Paso 5 — Traslado',
-    desc: 'Con tu HC generada, el personal te indica el módulo de programación de cita (área de módulos en el ala izquierda del pabellón).',
-  },
-  {
-    icon: '📁',
-    titulo: 'Entrega documentación física',
-    fase: 'Paso 6 — Documentos físicos',
-    desc: 'Entrega la copia física de tus documentos clínicos en el módulo de citas. Quedan adjuntos a tu Historia Clínica en el sistema.',
-  },
-  {
-    icon: '✅',
-    titulo: '¡Cita programada!',
-    fase: 'Fin del proceso',
-    desc: 'El personal programa tu primera cita médica. Recibirás fecha, hora y consultorio. ¡Ya quedas registrada en el sistema INEN!',
-  },
+  { num: 1, x: 55, y: 88, color: '#4CAF50', titulo: 'Ingresa al INEN',               fase: 'Llegada',                      desc: 'Entra por el Ingreso Principal (Av. Angamos Este 2520). El personal te orientará hacia el área de admisión.' },
+  { num: 2, x: 50, y: 57, color: '#7C3AED', titulo: 'Obtención de ticket',            fase: 'Ingreso al INEN — Ticket',     desc: 'Ve a la ventanilla central "Ticket de Admisión". Recibirás un número de turno para ser atendido.' },
+  { num: 3, x: 40, y: 20, color: '#7C3AED', titulo: 'Sala de espera Admisión',        fase: 'Ticket — Atención en módulo',  desc: 'Siéntate en la Sala de Espera Admisión (zona central-superior) y espera el llamado de tu número.' },
+  { num: 4, x: 62, y: 28, color: '#7C3AED', titulo: 'Presentación de documentos',     fase: 'Ticket — Atención en módulo',  desc: 'Cuando te llamen acércate al Módulo de Admisión. Presenta: DNI, informe médico externo, biopsia u otros exámenes.' },
+  { num: 5, x: 67, y: 28, color: '#7C3AED', titulo: 'Revisión de documentos',         fase: 'Ticket — Atención en módulo',  desc: 'El personal verifica y valida tu documentación para confirmar la apertura de Historia Clínica.' },
+  { num: 6, x: 80, y: 27, color: '#7C3AED', titulo: 'Generación de Historia Clínica', fase: 'Módulo admisión — Apertura HC', desc: 'Se crea tu Historia Clínica (HC) en el sistema INEN. Guarda el número de HC para todas tus visitas.' },
+  { num: 7, x: 42, y: 42, color: '#7C3AED', titulo: 'Traslado al módulo de citas',    fase: 'Apertura HC — Programación',   desc: 'Con tu HC generada el personal te indica el módulo de citas (ala izquierda, área Módulos). Dirígete ahí.' },
+  { num: 8, x: 38, y: 35, color: '#1565C0', titulo: 'Entrega documentación física',   fase: 'En módulo de Citas',           desc: 'Ya en el módulo de citas, entrega la copia física de tu DNI, informes y exámenes. El personal los adjuntará a tu Historia Clínica y programará tu primera cita.' },
+  { num: 9, x: 8,  y: 8,  color: '#E91E63', titulo: '¡Cita programada!',              fase: 'Fin del proceso',              desc: 'Tu primera cita médica queda programada. Recibirás fecha, hora y consultorio. ¡Ya quedas en el sistema!' },
 ] as const
 
 // ──────────────────────────────────────────────
@@ -317,6 +273,8 @@ export default function SedesINEN() {
   const [mapTrigger, setMapTrigger] = useState(0)
   const [campusSede, setCampusSede] = useState<Sede | null>(null)
   const [modalPunto, setModalPunto] = useState<PuntoINEN | null>(null)
+  const [modalGuia, setModalGuia] = useState(false)
+  const [pasoActual, setPasoActual] = useState(0)
 
   const vistaInterna = campusSede !== null
 
@@ -540,7 +498,10 @@ export default function SedesINEN() {
               key={p.id}
               position={[p.lat, p.lng]}
               icon={puntoIcon(p.emoji, p.color)}
-              eventHandlers={{ click: () => p.imagen ? setModalPunto(p) : undefined }}
+              eventHandlers={{ click: () => {
+                if (p.id === 'admision') { setModalGuia(true); setPasoActual(0) }
+                else if (p.imagen) setModalPunto(p)
+              } }}
             >
               {!p.imagen && (
                 <Popup>
@@ -632,6 +593,122 @@ export default function SedesINEN() {
               className="w-full object-contain max-h-80"
             />
             <p className="text-xs text-tinta/55 text-center px-4 py-3">{modalPunto.detalle}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Modal guía paso a paso — Admisión INEN */}
+      {modalGuia && (
+        <div className="fixed inset-0 z-[2000] bg-black/75 flex items-center justify-center p-3" onClick={() => setModalGuia(false)}>
+          <div className="bg-white rounded-2xl overflow-hidden w-full max-w-2xl shadow-2xl flex flex-col max-h-[92vh]" onClick={e => e.stopPropagation()}>
+
+            {/* Cabecera */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-black/8 bg-marca-50">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-marca-500">Proceso de Admisión INEN</p>
+                <p className="font-bold text-sm text-tinta leading-tight">{PASOS_ADMISION[pasoActual].fase}</p>
+              </div>
+              <button onClick={() => setModalGuia(false)} className="grid place-items-center w-8 h-8 rounded-xl bg-black/8 text-tinta/60 hover:bg-black/15">
+                <Icon name="close" size={16} />
+              </button>
+            </div>
+
+            {/* Plano con pasos posicionados */}
+            <div className="relative flex-shrink-0" style={{ aspectRatio: '16/7' }}>
+              <img src="/INEN/Admision mapa interno.png" alt="Plano interno INEN" className="w-full h-full object-cover" />
+
+              {PASOS_ADMISION.map((paso, i) => {
+                const activo = i === pasoActual
+                const hecho = i < pasoActual
+                const size = activo ? 32 : 20
+                return (
+                  <button
+                    key={paso.num}
+                    onClick={() => setPasoActual(i)}
+                    style={{
+                      position: 'absolute',
+                      left: `${paso.x}%`,
+                      top: `${paso.y}%`,
+                      transform: 'translate(-50%,-50%)',
+                      width: size,
+                      height: size,
+                      borderRadius: '50%',
+                      background: hecho ? '#4CAF50' : activo ? paso.color : '#9E9E9E',
+                      border: activo ? '3px solid #fff' : '2px solid #fff',
+                      boxShadow: activo ? `0 0 0 3px ${paso.color}` : '0 1px 4px rgba(0,0,0,.4)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      fontSize: activo ? 13 : 9,
+                      fontWeight: 800,
+                      zIndex: activo ? 10 : 5,
+                      transition: 'all .2s',
+                    }}
+                  >
+                    {hecho ? '✓' : paso.num}
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Descripción del paso actual */}
+            <div className="px-4 py-3 flex-1 overflow-y-auto">
+              <div className="flex items-start gap-3">
+                <div
+                  className="shrink-0 w-10 h-10 rounded-full flex items-center justify-content text-white font-extrabold text-base"
+                  style={{ background: PASOS_ADMISION[pasoActual].color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  {PASOS_ADMISION[pasoActual].num}
+                </div>
+                <div className="flex-1">
+                  <p className="font-bold text-sm text-tinta">{PASOS_ADMISION[pasoActual].titulo}</p>
+                  <p className="text-xs text-tinta/65 mt-0.5 leading-relaxed">{PASOS_ADMISION[pasoActual].desc}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Navegación */}
+            <div className="px-4 py-3 border-t border-black/8 flex items-center justify-between gap-2">
+              <button
+                onClick={() => setPasoActual(p => Math.max(0, p - 1))}
+                disabled={pasoActual === 0}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-marca-600 border border-marca-200 rounded-lg px-3 py-1.5 hover:bg-marca-50 disabled:opacity-30 transition"
+              >
+                <Icon name="left" size={12} /> Anterior
+              </button>
+
+              {/* Indicadores */}
+              <div className="flex gap-1">
+                {PASOS_ADMISION.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setPasoActual(i)}
+                    className="rounded-full transition-all"
+                    style={{ width: i === pasoActual ? 18 : 6, height: 6, background: i <= pasoActual ? '#E91E63' : '#D1D5DB' }}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={() => {
+                  const esTrasladoCitas = pasoActual === 6
+                  if (esTrasladoCitas) {
+                    setModalGuia(false)
+                    fly([-12.112396, -76.998969], 20)
+                  } else if (pasoActual < PASOS_ADMISION.length - 1) {
+                    setPasoActual(p => p + 1)
+                  } else {
+                    setModalGuia(false)
+                  }
+                }}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-white rounded-lg px-3 py-1.5 transition"
+                style={{ background: pasoActual === 6 ? '#1565C0' : '#E91E63' }}
+              >
+                {pasoActual === 6 ? '📍 Ver en mapa' : pasoActual < PASOS_ADMISION.length - 1 ? 'Siguiente' : '¡Listo!'}
+                <Icon name="right" size={12} />
+              </button>
+            </div>
           </div>
         </div>
       )}
